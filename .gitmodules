@@ -1,0 +1,4 @@
+[submodule "MaterialDesignInXamlToolkit"]
+	path = MaterialDesignInXamlToolkit
+	url = https://github.com/awooo-ph/MaterialDesignInXamlToolkit.git
+	branch = net40
