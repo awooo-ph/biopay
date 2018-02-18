@@ -23,5 +23,28 @@ namespace NORSU.BioPay
         {
             InitializeComponent();
         }
+
+        private void MinimizeClicked(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void MaximizeClicked(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+                WindowState = WindowState.Maximized;
+            else
+                WindowState = WindowState.Normal;
+        }
+
+        private void CloseClicked(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
     }
 }

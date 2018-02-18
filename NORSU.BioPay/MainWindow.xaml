@@ -5,8 +5,98 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NORSU.BioPay"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:NORSU.BioPay.Converters"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{StaticResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        MinWidth="555" MinHeight="471"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        SnapsToDevicePixels="True"
+        ResizeMode="CanResize"
+        WindowStyle="None"
+        xmlns:views="clr-namespace:NORSU.BioPay.Views"
+        MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
+        Title="BioPay" Height="350" Width="525">
+  <Grid>
     <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+    <md:ColorZone Mode="PrimaryDark" Foreground="White">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
         
+        <StackPanel Orientation="Horizontal" Margin="14 7" Grid.RowSpan="2">
+          <TextBlock Text="Bio" FontSize="17pt" VerticalAlignment="Bottom" FontFamily="Segoe Script"/>
+        <Path Data="M7,3.5C8.6539998,3.5,10,4.7950001,10,6.388L10,8.1824336 10.108952,8.1432595C10.390578,8.0501679 10.689875,8 11,8 12.03375,8 12.947187,8.5574219 13.486895,9.403955L13.503446,9.4313102 13.571287,9.3893738C13.996328,9.1411133 14.483125,9 15,9 16.03375,9 16.947187,9.5644531 17.486895,10.421631L17.495031,10.435248 17.571263,10.388261C17.996305,10.140722 18.483109,10 19,10 20.654053,10 22,11.440994 22,13.21199L22,25.100998 19.948975,31.313004C19.811035,31.733002 19.420044,32 19,32 18.895996,32 18.791016,31.983002 18.687012,31.94899 18.161987,31.776001 17.876953,31.209991 18.051025,30.685989L20,24.778992 20,13.21199C20,12.542999 19.552002,12 19,12 18.447998,12 18,12.542999 18,13.21199L18,14.981995 18,15C18,15.552 17.553,16 17,16 16.447,16 16,15.552 16,15L16,14.981995 16,13.21199 16,12.222C16,11.548 15.552,11 15,11 14.448,11 14,11.548 14,12.222L14,15C14,15.5175 13.607129,15.943594 13.102362,15.994834 13.068711,15.99825 13.034563,16 13,16 12.447,16 12,15.552 12,15L12,12.222 12,11.182C12,10.53 11.552,10 11,10 10.448,10 10,10.53 10,11.182L10,14.412 10,15C10,15.552 9.553,16 9,16 8.447,16 8,15.552 8,15L8,14.412 8,11.182 8,6.388C8,5.8979998 7.552,5.5 7,5.5 6.448,5.5 6,5.8979998 6,6.388L6,19.5C6,20.052 5.5530005,20.5 5,20.5 4.8271875,20.5 4.6647263,20.45625 4.5230236,20.379248L4.5072765,20.369678 4.4905472,20.368834C3.9857903,20.317594,3.592927,19.8915,3.592927,19.374L3.592927,16.047C3.592927,15.789 3.265934,15.5 2.7959433,15.5 2.3269529,15.5 1.999959,15.789 1.999959,16.047L1.999959,22.266 5.7728825,26.865999C6.1228752,27.292999 6.0618763,27.923 5.6338854,28.273001 5.4478893,28.426001 5.2238941,28.5 5.0008984,28.5 4.7109041,28.5 4.4249096,28.375 4.2269144,28.134001L0,22.98 0,16.047C0,14.643 1.2539749,13.5 2.7959433,13.5 3.1814356,13.5 3.5489902,13.571438 3.8834839,13.700531L4,13.74859 4,6.388C4,4.7950001,5.3459997,3.5,7,3.5z M7,0C10.584,0,13.5,2.8740001,13.5,6.4060001L13.5,7C13.5,7.552 13.053,8 12.5,8 11.947,8 11.5,7.552 11.5,7L11.5,6.4060001C11.5,3.9770002 9.4809999,2 7,2 4.5190001,2 2.5,3.9770002 2.5,6.4060001L2.5,6.9910002C2.5,7.543 2.0530005,7.9909999 1.5,7.9910002 0.94699955,7.9909999 0.5,7.543 0.5,6.9910002L0.5,6.4060001C0.5,2.8740001,3.4160004,0,7,0z"
+              Stretch="Uniform" Fill="#FFFFFFFF" Width="47" Height="47" RenderTransformOrigin="0.5,0.5"
+              Margin="-4 0 -7 0"
+              Grid.RowSpan="2">
+          <Path.RenderTransform>
+            <TransformGroup>
+              <TransformGroup.Children>
+                <RotateTransform Angle="0" />
+                <ScaleTransform ScaleX="1" ScaleY="1" />
+              </TransformGroup.Children>
+            </TransformGroup>
+          </Path.RenderTransform>
+        </Path>
+          <TextBlock Text="Pay" FontSize="17pt" VerticalAlignment="Bottom" FontFamily="Segoe Script" />
+        </StackPanel>
+        
+
+        <StackPanel Grid.Column="1">
+     
+          <TextBlock Text="Negros ORiental State University - Guihulngan Campus"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"
+                     Foreground="White"
+                     Grid.Column="1"
+                     Margin="4"
+                     FontWeight="Normal"
+                     Opacity="0.7"
+                     FontSize="11pt"
+                     Grid.Row="0" />
+          <TextBlock Text="FACULTY AND STAFF ATTENDANCE &amp; PAYROLL SYSTEM"
+                     TextAlignment="Center"
+                     FontSize="17pt"/>
+        </StackPanel>
+
+       
+      </Grid>
+    </md:ColorZone>
+
+      <views:Clock Grid.RowSpan="2"/>
+
+      <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Top"
+                  Grid.Row="0">
+        <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon WindowMinimize}"
+                Click="MinimizeClicked" />
+        <Button Style="{StaticResource WindowCommandButton}"
+                Click="MaximizeClicked"
+                Content="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow},
+                          Path=WindowState,Converter={converters:WindowStateToPackIcon }}" />
+        <Button Style="{StaticResource WindowCloseButton}" Content="{md:PackIcon WindowClose}"
+                Click="CloseClicked">
+
+        </Button>
+      </StackPanel>
     </Grid>
+    
+  </Grid>
 </Window>
+
