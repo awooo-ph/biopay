@@ -19,7 +19,7 @@ namespace NORSU.BioPay.ViewModels
     {
         private static readonly Verification Verifier = new Verification(2147);
 
-        public static byte[] ToBytes(this DPFP.Sample Sample)
+        public static byte[] ToImageBytes(this DPFP.Sample Sample)
         {
             DPFP.Capture.SampleConversion Convertor = new DPFP.Capture.SampleConversion();
             Bitmap bitmap = null;
@@ -78,13 +78,12 @@ namespace NORSU.BioPay.ViewModels
     class Scanner : ViewModelBase, DPFP.Capture.EventHandler
     {
         private static Capture Capturer;
-        private static Enrollment Enroller;
-        private static Verification Verifier;
 
         private Scanner()
         {
             
         }
+        
         private static Scanner _instance;
         public static Scanner Instance => _instance ?? (_instance = new Scanner());
 
@@ -129,8 +128,6 @@ namespace NORSU.BioPay.ViewModels
                 {
                     Capturer.EventHandler = Instance;
                     Capturer.StartCapture();
-                    Enroller = new Enrollment();
-                    Verifier = new Verification(2147);
                 }
             }
             catch (Exception e)
@@ -145,8 +142,6 @@ namespace NORSU.BioPay.ViewModels
             try
             {
                 Capturer.StopCapture();
-                Enroller = null;
-                Verifier = null;
                 Capturer.Dispose();
                 Capturer = null;
                 GC.Collect();
@@ -156,9 +151,15 @@ namespace NORSU.BioPay.ViewModels
                 //
             }
         }
+
+        public Action<Sample> OnScan { get; set; } = null;
         
         public void OnComplete(object Capture, string ReaderSerialNumber, Sample Sample)
         {
+            if (OnScan != null)
+            {
+                OnScan.Invoke(Sample);
+            } else
             Messenger.Default.Broadcast(Messages.Scan, Sample);
         }
 

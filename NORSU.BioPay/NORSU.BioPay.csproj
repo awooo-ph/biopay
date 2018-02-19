@@ -113,6 +113,7 @@
     <Compile Include="Converters\EqualityToVisibility.cs" />
     <Compile Include="Converters\Inverter.cs" />
     <Compile Include="Converters\WindowStateToPackIcon.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Scanner.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\Clock.xaml.cs">

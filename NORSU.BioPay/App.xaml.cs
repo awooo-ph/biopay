@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using NORSU.BioPay.ViewModels;
 
 namespace NORSU.BioPay
 {
@@ -18,7 +19,14 @@ namespace NORSU.BioPay
 
             awooo.IsRunning = true;
             awooo.Context = SynchronizationContext.Current;
+            Scanner.Start();
             base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Scanner.Stop();
+            base.OnExit(e);
         }
     }
 }

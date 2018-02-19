@@ -20,7 +20,9 @@
         SnapsToDevicePixels="True"
         ResizeMode="CanResize"
         WindowStyle="None"
+        DataContext="{Binding Source={x:Static vm:MainViewModel.Instance}}"
         xmlns:views="clr-namespace:NORSU.BioPay.Views"
+        xmlns:vm="clr-namespace:NORSU.BioPay.ViewModels"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         Title="BioPay" Height="350" Width="525">
   <Grid>
