@@ -157,10 +157,9 @@ namespace NORSU.BioPay.ViewModels
         public void OnComplete(object Capture, string ReaderSerialNumber, Sample Sample)
         {
             if (OnScan != null)
-            {
                 OnScan.Invoke(Sample);
-            } else
-            Messenger.Default.Broadcast(Messages.Scan, Sample);
+            else
+                Messenger.Default.Broadcast(Messages.Scan, Sample);
         }
 
         public void OnFingerGone(object Capture, string ReaderSerialNumber)
@@ -169,7 +168,6 @@ namespace NORSU.BioPay.ViewModels
 
         public void OnFingerTouch(object Capture, string ReaderSerialNumber)
         {
-            
         }
 
         public void OnReaderConnect(object Capture, string ReaderSerialNumber)
