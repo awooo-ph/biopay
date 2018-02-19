@@ -15,9 +15,10 @@ namespace NORSU.BioPay
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
+
             awooo.IsRunning = true;
             awooo.Context = SynchronizationContext.Current;
+            base.OnStartup(e);
         }
     }
 }
