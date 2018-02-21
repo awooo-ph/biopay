@@ -21,17 +21,28 @@ namespace NORSU.BioPay.ViewModels
         private MainViewModel()
         {
             
-            Messenger.Default.AddListener<Sample>(Messages.Scan,async sample =>
+            Messenger.Default.AddListener<Sample>(Messages.Scan, async sample =>
             {
                 if (ScreenIndex == AdminIndex) return;
 
                 var finger = sample.ToFingerPrint();
                 if (finger != null)
                 {
+                    finger.Usage++;
+                    finger.LastUsed = DateTime.Now;
+                    finger.Save();
+                    
+                    if (finger.Login && finger.Employee.IsAdmin)
+                    {
+                        Punch = finger.Employee;
+                        ScreenIndex = AdminIndex;
+                        return;
+                    }
+                    
                     var prevDtr = DailyTimeRecord.GetTimeIn(finger.EmployeeId);
                     if (prevDtr != null)
                     {
-                        //prevDtr.Update(nameof(DailyTimeRecord.TimeOut), DateTime.Now);
+                        if ((DateTime.Now - prevDtr.TimeIn).TotalSeconds < 60) return;
                         prevDtr.TimeOut = DateTime.Now;
                         prevDtr.Save();
                     }
@@ -401,7 +412,7 @@ namespace NORSU.BioPay.ViewModels
                 }
                 else
                 {
-                    
+                    finger.Update(nameof(FingerPrint.Login),true);
                     emp.Update(nameof(Employee.IsAdmin),true);
                     awooo.Context.Post(dd=>Admins.Filter = FilterAdmin,null);
                     IsAddingAdminError = false;
