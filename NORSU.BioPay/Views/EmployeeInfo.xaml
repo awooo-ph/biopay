@@ -124,6 +124,7 @@
             
             <StackPanel Margin="20" Grid.Row="1">
               <Button Style="{StaticResource MaterialDesignFlatButton}" Content="CHANGE PICTURE"
+                      Command="{Binding ChangePictureCommand}"
                       Margin="0 0 0 20"/>
 
                 <TextBox Text="{Binding Employees/HoursPerWeek,UpdateSourceTrigger=PropertyChanged}"

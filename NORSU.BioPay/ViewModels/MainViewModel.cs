@@ -224,5 +224,37 @@ namespace NORSU.BioPay.ViewModels
                 }
             });
         }));
+
+        private ICommand _changePictureCommand;
+
+        public ICommand ChangePictureCommand => _changePictureCommand ?? (_changePictureCommand = new DelegateCommand(
+            d =>
+            {
+                if (!(Employees.CurrentItem is Employee emp)) return;
+                
+                    try
+                    {
+                        var dialog = new OpenFileDialog
+                        {
+                            Multiselect = false,
+                            Filter = @"All Images|*.BMP;*.JPG;*.JPEG;*.GIF;*.PNG|
+                            BMP Files|*.BMP;*.DIB;*.RLE|
+                            JPEG Files|*.JPG;*.JPEG;*.JPE;*.JFIF|
+                            GIF Files|*.GIF|
+                            PNG Files|*.PNG",
+                            Title = "Select Picture",
+                        };
+                        if (!(dialog.ShowDialog() ?? false))
+                            return;
+                        
+                        emp.Update(nameof(Employee.Picture),File.ReadAllBytes(dialog.FileName));
+                    }
+                    catch (Exception e)
+                    {
+                        //
+                    }
+                
+                
+            },d=>Employees.CurrentItem!=null));
     }
 }
