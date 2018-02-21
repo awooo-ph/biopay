@@ -225,6 +225,117 @@ namespace NORSU.BioPay.ViewModels
             });
         }));
 
+
+        private bool _IsAddingAdmin;
+
+        public bool IsAddingAdmin
+        {
+            get => _IsAddingAdmin;
+            set
+            {
+                if(value == _IsAddingAdmin)
+                    return;
+                _IsAddingAdmin = value;
+                OnPropertyChanged(nameof(IsAddingAdmin));
+            }
+        }
+
+        private bool _IsWaitingForAdminScan;
+
+        public bool IsWaitingForAdminScan
+        {
+            get => _IsWaitingForAdminScan;
+            set
+            {
+                if(value == _IsWaitingForAdminScan)
+                    return;
+                _IsWaitingForAdminScan = value;
+                OnPropertyChanged(nameof(IsWaitingForAdminScan));
+            }
+        }
+
+        private bool _IsAddingAdminError;
+
+        public bool IsAddingAdminError
+        {
+            get => _IsAddingAdminError;
+            set
+            {
+                if(value == _IsAddingAdminError)
+                    return;
+                _IsAddingAdminError = value;
+                OnPropertyChanged(nameof(IsAddingAdminError));
+            }
+        }
+
+        private string _AddingAdminStatus;
+
+        public string AddingAdminStatus
+        {
+            get => _AddingAdminStatus;
+            set
+            {
+                if(value == _AddingAdminStatus)
+                    return;
+                _AddingAdminStatus = value;
+                OnPropertyChanged(nameof(AddingAdminStatus));
+            }
+        }
+
+        
+        private ICommand _addAdminCommand;
+
+        public ICommand AddAdminCommand => _addAdminCommand ?? (_addAdminCommand = new DelegateCommand(d =>
+        {
+            IsAddingAdmin = true;
+            IsAddingAdminError = true;
+            IsWaitingForAdminScan = true;
+            AddingAdminStatus = "Waiting for Finger Scan...";
+
+            Scanner.OnScan = async sample =>
+            {
+                Scanner.OnScan = null;
+                IsWaitingForAdminScan = false;
+                var finger = sample.ToFingerPrint();
+                var emp = Employee.Cache.FirstOrDefault(x => x.Id == finger.EmployeeId);
+                
+                if (finger==null || emp==null)
+                {
+                    IsAddingAdminError = true;
+                    AddingAdminStatus = "Invalid Finger";
+                }
+                else
+                {
+                    
+                    emp.Update(nameof(Employee.IsAdmin),true);
+                    awooo.Context.Post(dd=>Admins.Filter = FilterAdmin,null);
+                    IsAddingAdminError = false;
+                    AddingAdminStatus = "Success!";
+                }
+
+                await TaskEx.Delay(1111);
+                IsAddingAdmin = false;
+            };
+        }));
+
+        private ICommand _cancelAddAdminCommand;
+
+        public ICommand CancelAddAdminCommand =>
+            _cancelAddAdminCommand ?? (_cancelAddAdminCommand = new DelegateCommand(
+                d =>
+                {
+                    Scanner.OnScan = null;
+                    IsAddingAdmin = false;
+                }));
+
+        private ICommand _RemoveAdminCommand;
+
+        public ICommand RemoveAdminCommand => _RemoveAdminCommand ?? (_RemoveAdminCommand = new DelegateCommand<Employee>(d =>
+        {
+            d.Update(nameof(Employee.IsAdmin),false);
+            Admins.Refresh();
+        }));
+
         private ICommand _changePictureCommand;
 
         public ICommand ChangePictureCommand => _changePictureCommand ?? (_changePictureCommand = new DelegateCommand(
