@@ -142,6 +142,9 @@
     <Compile Include="Views\PrintEnrollment.xaml.cs">
       <DependentUpon>PrintEnrollment.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PunchView.xaml.cs">
+      <DependentUpon>PunchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -174,6 +177,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PrintEnrollment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PunchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

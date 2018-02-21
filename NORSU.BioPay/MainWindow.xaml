@@ -198,6 +198,7 @@
                         VerticalAlignment="Top"
                         Grid.Row="0">
               <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon Settings}"
+                      Command="{Binding ToggleSettingsCommand}"
                       ToolTip="Settings"/>
               <Rectangle Width="1" Fill="{StaticResource MaterialDesignDivider}"/>
               <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon WindowMinimize}"
@@ -218,6 +219,17 @@
       </Grid>
       </md:DrawerHost>
       </md:DialogHost>
+    </md:TransitionerSlide>
+
+    <md:TransitionerSlide>
+      <md:TransitionerSlide.ForwardWipe>
+        <md:FadeWipe />
+      </md:TransitionerSlide.ForwardWipe>
+      <md:TransitionerSlide.BackwardWipe>
+        <md:FadeWipe />
+      </md:TransitionerSlide.BackwardWipe>
+      <views:PunchView VerticalAlignment="Stretch"
+                       VerticalContentAlignment="Stretch"/>
     </md:TransitionerSlide>
   </md:Transitioner>
 </Window>

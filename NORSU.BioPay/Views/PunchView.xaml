@@ -1,0 +1,144 @@
+﻿<UserControl x:Class="NORSU.BioPay.Views.PunchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NORSU.BioPay.Views"
+             mc:Ignorable="d" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:NORSU.BioPay.Converters"
+             xmlns:models="http://norsu-g.biopay/models"
+             d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>
+    <ResourceDictionary
+      Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+  </UserControl.Resources>
+  <md:ColorZone Mode="Dark" VerticalAlignment="Stretch">
+
+
+    <Grid Grid.Row="1" VerticalAlignment="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Viewbox Margin="47 47 0 47" DataContext="{Binding Punch}">
+        <StackPanel VerticalAlignment="Top">
+          <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
+                     RenderOptions.BitmapScalingMode="HighQuality"
+                     Visibility="{Binding HasPicture,Converter={converters:BooleanToVisibility}}"
+                     Stretch="UniformToFill"
+                     Width="256"
+                     HorizontalAlignment="Center"
+                     Height="256"/>
+          <Grid
+                HorizontalAlignment="Center"
+                Visibility="{Binding HasPicture,Converter={converters:BooleanToVisibility Collapsed,Visible}}">
+            <Image Source="pack://application:,,,/user_male.jpg"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Stretch="UniformToFill"
+                       Visibility="{Binding Gender,Converter={converters:EqualityConverter ReturnType=Visibility, Operation=Equals,Operand={x:Static models:Sexes.Male}}}"
+                       Width="256" Height="256" />
+            <Image Source="pack://application:,,,/user_profile_female.jpg"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Stretch="UniformToFill"
+                       Visibility="{Binding Gender,Converter={converters:EqualityConverter ReturnType=Visibility, Operation=Equals,Operand={x:Static models:Sexes.Female}}}"
+                       Width="256" Height="256" />
+          </Grid>
+
+          <TextBlock Text="{Binding Fullname}" TextAlignment="Center"
+                         FontWeight="Bold"
+                         FontSize="24pt"/>
+          <TextBlock Text="{Binding Job.Name}"
+                         TextAlignment="Center"
+                         FontSize="17pt"/>
+        </StackPanel>
+      </Viewbox>
+
+      <Viewbox Grid.Column="1"
+                   Margin="10 47 20 47">
+        <StackPanel>
+
+          <md:ColorZone Mode="PrimaryDark">
+          <TextBlock Text="MORNING"
+                     Margin="10 4"
+                     TextAlignment="Center"
+                         FontSize="15pt"
+                         FontWeight="Bold"/>
+          </md:ColorZone>
+          <UniformGrid Columns="2" DataContext="{Binding PunchAM}">
+            <md:ColorZone Mode="PrimaryLight" Margin="0 0 .25 0">
+            <TextBlock Text="IN"
+                         TextAlignment="Center"
+                         Grid.Column="0"
+                         Grid.Row="1"
+                         FontSize="15pt"/>
+            </md:ColorZone>
+            <md:ColorZone Mode="PrimaryLight" Margin=".25 0 0 0">
+            <TextBlock Text="OUT"
+                         TextAlignment="Center"
+                         Grid.Column="1"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+
+            <md:ColorZone Mode="Light" Margin="0 0 .25 0">
+              <TextBlock Text="{Binding TimeIn,StringFormat={}hh:mm}"
+                         TextAlignment="Center"
+                         Grid.Column="2"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+            <md:ColorZone Mode="Light" Margin=".25 0 0 0">
+            <TextBlock Text="{Binding TimeOut,StringFormat={}hh:mm}"
+                         TextAlignment="Center"
+                         Grid.Column="3"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+          </UniformGrid>
+
+          <md:ColorZone Mode="PrimaryDark" Margin="0 10 0 0">
+            <TextBlock Text="AFTERNOON" Grid.ColumnSpan="2"
+                       Margin="10 4"
+                     TextAlignment="Center"
+                     FontSize="15pt"
+                     FontWeight="Bold" />
+            </md:ColorZone>
+          <UniformGrid Columns="2" DataContext="{Binding PunchPM}">
+            <md:ColorZone Mode="PrimaryLight" Margin="0 0 .25 0">
+              <TextBlock Text="IN"
+                         TextAlignment="Center"
+                         Grid.Column="0"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+            <md:ColorZone Mode="PrimaryLight" Margin=".25 0 0 0">
+              <TextBlock Text="OUT"
+                         TextAlignment="Center"
+                         Grid.Column="1"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+
+            <md:ColorZone Mode="Light" Margin="0 0 .25 0">
+              <TextBlock Text="{Binding TimeIn,StringFormat={}hh:mm}"
+                         TextAlignment="Center"
+                         Grid.Column="2"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+            <md:ColorZone Mode="Light" Margin=".25 0 0 0">
+              <TextBlock Text="{Binding TimeOut,StringFormat={}hh:mm}"
+                         TextAlignment="Center"
+                         Grid.Column="3"
+                         Grid.Row="1"
+                         FontSize="15pt" />
+            </md:ColorZone>
+          </UniformGrid>
+        </StackPanel>
+      </Viewbox>
+    </Grid>
+
+  </md:ColorZone>
+</UserControl>
