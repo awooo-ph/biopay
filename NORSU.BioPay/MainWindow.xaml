@@ -23,6 +23,7 @@
         DataContext="{Binding Source={x:Static vm:MainViewModel.Instance}}"
         xmlns:views="clr-namespace:NORSU.BioPay.Views"
         xmlns:vm="clr-namespace:NORSU.BioPay.ViewModels"
+        xmlns:models="http://norsu-g.biopay/models"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         Title="BioPay" Height="350" Width="525">
   <Window.InputBindings>
@@ -55,16 +56,95 @@
           <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1" Background="#aaFFFFFF">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-          </Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!--Employee list-->
+        <md:ColorZone Mode="Light" Grid.Row="1" VerticalAlignment="Stretch">
+          <DataGrid ItemsSource="{Binding Employees}"
+                    IsSynchronizedWithCurrentItem="True"
+                    AutoGenerateColumns="False">
+            
+            <DataGrid.Columns>
+
+
+              <DataGridTextColumn Header="Employee ID"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding EmployeeId,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              
+              
+              <DataGridTextColumn Header="First Name" Binding="{Binding Firstname,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+              <DataGridTextColumn Header="Middle Name"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding Middlename,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              <DataGridTextColumn Header="Last Name"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding Lastname,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              
+              <md:MaterialDataGridComboBoxColumn ItemsSource="{Binding Source={local:EnumBinding EnumType={x:Type models:Sexes}}}"
+                                                 SelectedItemBinding="{Binding Gender}"
+                                                 Header="Gender"/>
+
+              <DataGridTemplateColumn Header="Birth Date" SortMemberPath="BirthDate">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding BirthDate,StringFormat={}MMM\ d\,\ yyyy}" TextAlignment="Center" />
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                <DataGridTemplateColumn.CellEditingTemplate>
+                  <DataTemplate>
+                    <DatePicker SelectedDate="{Binding BirthDate}" />
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellEditingTemplate>
+              </DataGridTemplateColumn>
+
+              <DataGridTextColumn Header="Civil Status"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding CivilStatus,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+
+              <DataGridTextColumn Header="Salary"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding Salary,StringFormat={}#\,##0\.00,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              <DataGridTextColumn Header="Rate"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding HourlyRate,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              <DataGridTextColumn Header="Hours/Week"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding HoursPerWeek,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              
+              <DataGridTextColumn Header="Designation"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding Designation,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+
+              <DataGridTemplateColumn Header="Date Hired" SortMemberPath="BirthDate">
+                <DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding DateHired,StringFormat={}MMM\ d\,\ yyyy}" TextAlignment="Center" />
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                <DataGridTemplateColumn.CellEditingTemplate>
+                  <DataTemplate>
+                    <DatePicker SelectedDate="{Binding DateHired}" />
+                  </DataTemplate>
+                </DataGridTemplateColumn.CellEditingTemplate>
+              </DataGridTemplateColumn>
+
+            
+              
+            </DataGrid.Columns>
+
           
+          </DataGrid>
+        </md:ColorZone>
           
-        </Grid>
-        
+        <!--Title bar-->
         <md:ColorZone Mode="PrimaryDark" Foreground="White"
+                      Grid.Row="0"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
                       md:ShadowAssist.ShadowDepth="Depth2" md:ShadowAssist.ShadowEdges="Bottom">
           <Grid>
             <Grid.ColumnDefinitions>
@@ -130,10 +210,12 @@
             </StackPanel>
           </Grid>
         </md:ColorZone>
-        
-        
+
+        <views:EmployeeInfo Grid.Row="1" Grid.Column="1"/>
       </Grid>
     </md:TransitionerSlide>
   </md:Transitioner>
 </Window>
+
+
 

@@ -8,6 +8,11 @@
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              Background="{StaticResource MaterialDesignPaper}"
              d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>
+    <ResourceDictionary
+      Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+  </UserControl.Resources>
+  <md:ColorZone Mode="Dark" VerticalAlignment="Stretch">
   <Grid>
   
   <Viewbox VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -48,9 +53,14 @@
       <TextBlock Text="Pay" FontSize="17pt" VerticalAlignment="Bottom" FontFamily="Segoe Script" />
 
         <Rectangle Width="1" Margin="20 0" Fill="White"/>
-        <md:MaterialDateDisplay/>
+            <md:MaterialDateDisplay md:ColorZoneAssist.Mode="Dark"
+                                Foreground="{StaticResource MaterialDesignDarkForeground}"
+                                Background="{StaticResource MaterialDesignDarkBackground}">
+              
+            </md:MaterialDateDisplay>
       </StackPanel>
   </Grid>
   </Viewbox>
   </Grid>
+  </md:ColorZone>
 </UserControl>

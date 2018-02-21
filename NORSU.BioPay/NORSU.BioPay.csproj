@@ -115,14 +115,23 @@
     <Compile Include="Converters\BooleanToVisibility.cs" />
     <Compile Include="Converters\BytesToImage.cs" />
     <Compile Include="Converters\ConverterBase.cs" />
+    <Compile Include="Converters\DtrGroupConverter.cs" />
     <Compile Include="Converters\EqualityToVisibility.cs" />
     <Compile Include="Converters\Inverter.cs" />
+    <Compile Include="Converters\TimeSpanConverter.cs" />
     <Compile Include="Converters\WindowStateToPackIcon.cs" />
+    <Compile Include="EnumBinding.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Scanner.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\AdminView.xaml.cs">
+      <DependentUpon>AdminView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Clock.xaml.cs">
       <DependentUpon>Clock.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EmployeeInfo.xaml.cs">
+      <DependentUpon>EmployeeInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EmployeesView.xaml.cs">
       <DependentUpon>EmployeesView.xaml</DependentUpon>
@@ -139,7 +148,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AdminView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Clock.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EmployeeInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -189,6 +206,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="norsu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="user_male.jpg" />
+    <Resource Include="user_profile_female.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.107.0\build\net40\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net40\System.Data.SQLite.Core.targets')" />
