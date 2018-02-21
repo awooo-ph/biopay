@@ -6,7 +6,9 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DPFP;
+using MaterialDesignThemes.Wpf;
 using Models;
+using NORSU.BioPay.Views;
 
 namespace NORSU.BioPay.ViewModels
 {
@@ -44,11 +46,47 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
+        private int _SelectedAuthenticationIndex;
+
+        public int SelectedAuthenticationIndex
+        {
+            get => _SelectedAuthenticationIndex;
+            set
+            {
+                if(value == _SelectedAuthenticationIndex)
+                    return;
+                _SelectedAuthenticationIndex = value;
+                OnPropertyChanged(nameof(SelectedAuthenticationIndex));
+            }
+        }
+
+        private ListCollectionView _admins;
+
+        public ListCollectionView Admins
+        {
+            get
+            {
+                if (_admins != null) return _admins;
+                _admins = new ListCollectionView(Employee.Cache);
+                _admins.Filter = FilterAdmin;
+                return _admins;
+            }
+        }
+
+        private bool FilterAdmin(object o)
+        {
+            if (!(o is Employee e)) return false;
+            return e.IsAdmin;
+        }
+
         private ICommand _showAdminCommand;
 
         public ICommand ShowAdminCommand => _showAdminCommand ?? (_showAdminCommand = new DelegateCommand(d =>
         {
-            ScreenIndex = AdminIndex;
+            if (ScreenIndex != AdminIndex)
+                ScreenIndex = AdminIndex;
+            else
+                ScreenIndex = ClockIndex;
         }));
 
         private ListCollectionView _employees;
@@ -103,6 +141,88 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
-        
+        private ICommand _showSettingsCommand;
+
+        public ICommand ToggleSettingsCommand => _showSettingsCommand ?? (_showSettingsCommand = new DelegateCommand(
+            d =>
+            {
+                IsSettingsShown = !IsSettingsShown;
+            }));
+
+        private bool _IsSettingsShown;
+
+        public bool IsSettingsShown
+        {
+            get => _IsSettingsShown;
+            set
+            {
+                if(value == _IsSettingsShown)
+                    return;
+                _IsSettingsShown = value;
+                OnPropertyChanged(nameof(IsSettingsShown));
+            }
+        }
+
+        private ListCollectionView _jobs;
+
+        public ListCollectionView Jobs
+        {
+            get
+            {
+                if (_jobs != null) return _jobs;
+                _jobs = new ListCollectionView(Job.Cache);
+                return _jobs;
+            }
+        }
+
+        private ListCollectionView _currentEmployeeFingers;
+
+        public ListCollectionView CurrentEmployeeFingers
+        {
+            get
+            {
+                if (_currentEmployeeFingers != null) return _currentEmployeeFingers;
+                _currentEmployeeFingers = new ListCollectionView(FingerPrint.Cache);
+                _currentEmployeeFingers.Filter = FilterFinger;
+                return _currentEmployeeFingers;
+            }
+        }
+
+        private bool FilterFinger(object o)
+        {
+            if (!(Employees.CurrentItem is Employee e)) return false;
+            if (!(o is FingerPrint f)) return false;
+            return f.EmployeeId == e.Id;
+        }
+
+        private ICommand _addFingerCommand;
+
+        public ICommand AddFingerCommand => _addFingerCommand ?? (_addFingerCommand = new DelegateCommand(async d =>
+        {
+            if (!(Employees.CurrentItem is Employee employee)) return;
+            
+            var dlg = new AddFingerViewModel();
+            Scanner.OnScan = dlg.Scan;
+
+            var view = new PrintEnrollment() {DataContext = dlg};
+
+            await DialogHost.Show(view, "Admin", (sender, args) => { }, (sender, args) =>
+            {
+                if (args.IsCancelled) return;
+                if ((args.Parameter as bool?) ?? false)
+                {
+                    Scanner.OnScan = null;
+                    new FingerPrint()
+                    {
+                        EmployeeId = employee.Id,
+                        EditMode = true,
+                        Description = "Tudlo",
+                        Template = dlg.ResultTemplate.Bytes,
+                        Picture = dlg.ResultThumbnail,
+                    }.Save();
+                    CurrentEmployeeFingers.Refresh();
+                }
+            });
+        }));
     }
 }

@@ -115,12 +115,15 @@
     <Compile Include="Converters\BooleanToVisibility.cs" />
     <Compile Include="Converters\BytesToImage.cs" />
     <Compile Include="Converters\ConverterBase.cs" />
+    <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\DtrGroupConverter.cs" />
     <Compile Include="Converters\EqualityToVisibility.cs" />
     <Compile Include="Converters\Inverter.cs" />
     <Compile Include="Converters\TimeSpanConverter.cs" />
     <Compile Include="Converters\WindowStateToPackIcon.cs" />
     <Compile Include="EnumBinding.cs" />
+    <Compile Include="ViewModels\AddFingerViewModel.cs" />
+    <Compile Include="ViewModels\Finger.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Scanner.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
@@ -135,6 +138,12 @@
     </Compile>
     <Compile Include="Views\EmployeesView.xaml.cs">
       <DependentUpon>EmployeesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PrintEnrollment.xaml.cs">
+      <DependentUpon>PrintEnrollment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -161,6 +170,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EmployeesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PrintEnrollment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

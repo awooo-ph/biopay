@@ -34,5 +34,85 @@ namespace NORSU.BioPay.Properties {
                 this["EnableSchedules"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime TimeInAM {
+            get {
+                return ((global::System.DateTime)(this["TimeInAM"]));
+            }
+            set {
+                this["TimeInAM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime TimeOutAM {
+            get {
+                return ((global::System.DateTime)(this["TimeOutAM"]));
+            }
+            set {
+                this["TimeOutAM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime TimeInPM {
+            get {
+                return ((global::System.DateTime)(this["TimeInPM"]));
+            }
+            set {
+                this["TimeInPM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime TimeOutPM {
+            get {
+                return ((global::System.DateTime)(this["TimeOutPM"]));
+            }
+            set {
+                this["TimeOutPM"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool TrimOvertime {
+            get {
+                return ((bool)(this["TrimOvertime"]));
+            }
+            set {
+                this["TrimOvertime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoTimeOut {
+            get {
+                return ((bool)(this["AutoTimeOut"]));
+            }
+            set {
+                this["AutoTimeOut"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DiscardUnclosed {
+            get {
+                return ((bool)(this["DiscardUnclosed"]));
+            }
+            set {
+                this["DiscardUnclosed"] = value;
+            }
+        }
     }
 }

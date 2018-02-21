@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NORSU.BioPay.ViewModels;
 
 namespace NORSU.BioPay
 {
@@ -44,6 +45,7 @@ namespace NORSU.BioPay
 
         private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if(MainViewModel.Instance.IsSettingsShown) return;
             DragMove();
         }
     }

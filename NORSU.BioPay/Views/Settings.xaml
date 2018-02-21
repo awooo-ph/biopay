@@ -1,0 +1,248 @@
+﻿<UserControl x:Class="NORSU.BioPay.Views.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NORSU.BioPay.Views"
+             mc:Ignorable="d" 
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:properties="clr-namespace:NORSU.BioPay.Properties"
+             Width="333"
+             xmlns:converters="clr-namespace:NORSU.BioPay.Converters"
+             xmlns:models="http://norsu-g.biopay/models"
+             xmlns:viewModels="clr-namespace:NORSU.BioPay.ViewModels"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="20">
+        <StackPanel Orientation="Horizontal" Margin="10 0 10 20">
+          <md:PackIcon Kind="Clock" Height="24" Width="24" VerticalAlignment="Center" />
+          <TextBlock Text=" TIME SETTINGS" FontSize="14pt" FontWeight="Bold" VerticalAlignment="Center" />
+        </StackPanel>
+        <UniformGrid Rows="1" Margin="10">
+          <md:TimePicker md:HintAssist.Hint="TIME IN (AM)"
+                         SelectedTime="{Binding Source={x:Static properties:Settings.Default},Path=TimeInAM,Mode=TwoWay}"
+                         IsInvalidTextAllowed="False"
+                   Margin="0 0 7 0"
+                   md:HintAssist.IsFloating="True"/>
+          <md:TimePicker md:HintAssist.Hint="TIME OUT (AM)"
+                         SelectedTime="{Binding Source={x:Static properties:Settings.Default},Path=TimeOutAM,Mode=TwoWay}"
+                   Margin="7 0 0 0"
+                   md:HintAssist.IsFloating="True" />
+        </UniformGrid>
+        <UniformGrid Rows="1" Margin="10">
+          
+          <md:TimePicker md:HintAssist.Hint="TIME IN (PM)"
+                         SelectedTime="{Binding Source={x:Static properties:Settings.Default},Path=TimeInPM,Mode=TwoWay}"
+                   Margin="0 0 7 0"
+                   md:HintAssist.IsFloating="True" />
+          <md:TimePicker md:HintAssist.Hint="TIME OUT (PM)"
+                         SelectedTime="{Binding Source={x:Static properties:Settings.Default},Path=TimeOutPM,Mode=TwoWay}"
+                   Margin="7 0 0 0"
+                   md:HintAssist.IsFloating="True" />
+        </UniformGrid>
+        <Grid Margin="10">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <ToggleButton Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                        IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=TrimOvertime,Mode=TwoWay}"
+                        Grid.Row="0" Grid.Column="1"/>
+          <TextBlock Text="TRIM OVERTIME"
+                     FontWeight="Bold"
+                     Grid.Row="0" Grid.Column="0"/>
+          <TextBlock Text="Only count the time between the TIME IN and TIME OUT settings above."
+                     Visibility="{Binding Source={x:Static properties:Settings.Default},Path=TrimOvertime,Converter={converters:BooleanToVisibility}}"
+                     Opacity="0.7"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"/>
+          <TextBlock Text="Include logged time outside the TIME IN and TIME OUT settings above."
+                     Visibility="{Binding Source={x:Static properties:Settings.Default},Path=TrimOvertime,Converter={converters:BooleanToVisibility Collapsed, Visible}}"
+                     Opacity="0.7"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
+        </Grid>
+
+        <Grid Margin="10">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <ToggleButton Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                        IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=AutoTimeOut,Mode=TwoWay}"
+                        Grid.Row="0" Grid.Column="1" />
+          <TextBlock Text="AUTOMATIC TIME OUT"
+                     FontWeight="Bold"
+                     Grid.Row="0" Grid.Column="0" />
+          <TextBlock Text="Automatically punch out employees who have punched on the set TIME OUT above."
+                     Visibility="{Binding Source={x:Static properties:Settings.Default},Path=AutoTimeOut,Converter={converters:BooleanToVisibility}}"
+                     Opacity="0.7"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
+          <TextBlock Text="Do nothing on"
+                     Visibility="{Binding Source={x:Static properties:Settings.Default},Path=AutoTimeOut,Converter={converters:BooleanToVisibility Collapsed, Visible}}"
+                     Opacity="0.7"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
+        </Grid>
+
+        <Grid Margin="10">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+          <ToggleButton Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                        IsChecked="{Binding Source={x:Static properties:Settings.Default},Path=DiscardUnclosed,Mode=TwoWay}"
+                        Grid.Row="0" Grid.Column="1" />
+          <TextBlock Text="DISCARD UNCLOSED TIME CARD"
+                     FontWeight="Bold"
+                     Grid.Row="0" Grid.Column="0" />
+          <TextBlock Text="Unclosed time cards are those TIME INs without TIME OUTs. This option discards them."
+                     Visibility="{Binding Source={x:Static properties:Settings.Default},Path=DiscardUnclosed,Converter={converters:BooleanToVisibility}}"
+                     Opacity="0.7"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
+          <TextBlock Text="Do not discard unclosed time cards. Close it with the TIME OUT settings above instead."
+                     Visibility="{Binding Source={x:Static properties:Settings.Default},Path=DiscardUnclosed,Converter={converters:BooleanToVisibility Collapsed, Visible}}"
+                     Opacity="0.7"
+                     Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
+        </Grid>
+
+
+      <StackPanel Orientation="Horizontal" Margin="10 20 10 0">
+        <md:PackIcon Kind="Cash" Height="24" Width="24" VerticalAlignment="Center" />
+        <TextBlock Text=" SALARY RATES" FontSize="14pt" FontWeight="Bold" VerticalAlignment="Center" />
+      </StackPanel>
+        <DataGrid ItemsSource="{Binding Jobs}"
+                  MinHeight="111"
+                  AutoGenerateColumns="False"
+                  CanUserResizeRows="False"
+                  CanUserResizeColumns="False">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Designation"
+                                md:HintAssist.Hint="Ex. INSTRUCTOR I"
+                                Binding="{Binding Name,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                                EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+          <DataGridTextColumn Header="Rate"
+                              Binding="{Binding Rate,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+                              EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}" />
+            <DataGridCheckBoxColumn Header="Faculty"
+                                    Binding="{Binding Teaching,Mode=TwoWay}"
+                                    ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}"
+                                    EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"/>
+        </DataGrid.Columns>
+        </DataGrid>
+
+      <StackPanel Orientation="Horizontal" Margin="10 40 10 10">
+        <md:PackIcon Kind="Lock" Height="24" Width="24" VerticalAlignment="Center" />
+        <TextBlock Text=" ADMIN AUTHENTICATION" FontSize="14pt" FontWeight="Bold" VerticalAlignment="Center" />
+      </StackPanel>
+
+
+      <ListBox Grid.Row="1" Margin="0 1"
+               SelectedIndex="{Binding SelectedAuthenticationIndex}"
+               x:Name="ListBox"
+               HorizontalContentAlignment="Stretch">
+        <ListBox.ItemContainerStyle>
+          <Style BasedOn="{StaticResource MaterialDesignListBoxItem}"
+                 TargetType="ListBoxItem">
+            <Style.Triggers>
+              <Trigger Property="IsSelected" Value="True">
+                <Setter Property="FontWeight" Value="Bold" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </ListBox.ItemContainerStyle>
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <UniformGrid Rows="1" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBoxItem x:Name="Info" IsSelected="True">
+          <TextBlock Text="PASSWORD" TextAlignment="Center" />
+        </ListBoxItem>
+        <ListBoxItem IsSelected="{Binding ElementName=Info,Path=IsSelected,Converter={converters:Inverter}}">
+          <TextBlock Text="FINGER PRINT" TextAlignment="Center" />
+        </ListBoxItem>
+      </ListBox>
+        <md:Transitioner VerticalAlignment="Stretch"
+                         SelectedIndex="{Binding SelectedAuthenticationIndex}"
+                         x:Name="Transitioner"
+                         Grid.Row="2">
+          <md:Transitioner.ItemContainerStyle>
+            <Style TargetType="{x:Type md:TransitionerSlide}">
+              <Setter Property="ForwardWipe">
+                <Setter.Value>
+                  <md:FadeWipe />
+                </Setter.Value>
+              </Setter>
+              <Setter Property="BackwardWipe">
+                <Setter.Value>
+                  <md:FadeWipe />
+                </Setter.Value>
+              </Setter>
+            </Style>
+          </md:Transitioner.ItemContainerStyle>
+
+        <StackPanel>
+          <PasswordBox x:Name="CurrentPassword"
+                       md:HintAssist.Hint="CURRENT PASSWORD"
+                       md:HintAssist.IsFloating="True"/>
+          <PasswordBox x:Name="NewPassword"
+                       md:HintAssist.Hint="NEW PASSWORD"
+                       md:HintAssist.IsFloating="True" />
+          <PasswordBox x:Name="NewPassword2"
+                       md:HintAssist.Hint="RETYPE PASSWORD"
+                       md:HintAssist.IsFloating="True" />
+          <Button Content="CHANGE PASSWORD" Margin="0 10"/>
+        </StackPanel>
+          
+          <StackPanel>
+          <ItemsControl ItemsSource="{Binding Admins}" Grid.IsSharedSizeScope="True">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="{x:Type models:Employee}">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                  </Grid.ColumnDefinitions>
+                  <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
+                         Width="24" Height="24" VerticalAlignment="Center"
+                         Margin="4"/>
+                  <StackPanel Margin="4" VerticalAlignment="Center"
+                              Grid.Column="1">
+                    <TextBlock Text="{Binding Fullname}" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Job.Name}"/>
+                  </StackPanel>
+                  <Button Grid.Column="2" VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          ToolTip="Remove as Admin"
+                          Command="{Binding Source={x:Static viewModels:MainViewModel.Instance},Path=RemoveAdminCommand}"
+                          CommandParameter="{Binding}"
+                          Width="Auto"
+                          Height="Auto"
+                          Padding="4 2"
+                          Style="{StaticResource MaterialDesignFlatAccentButton}"
+                          Content="{md:PackIcon Close}"/>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+            <Button Content="ADD NEW ADMIN" Command="{Binding AddNewAdminCommand}"/>
+          </StackPanel>
+          </md:Transitioner>
+    </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

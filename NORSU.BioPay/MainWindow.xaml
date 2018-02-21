@@ -28,7 +28,9 @@
         Title="BioPay" Height="350" Width="525">
   <Window.InputBindings>
     <KeyBinding Key="F7" Command="{Binding ShowAdminCommand}"/>
+    <KeyBinding Key="Escape" Command="{Binding ToggleSettingsCommand}"/>
   </Window.InputBindings>
+  
   <md:Transitioner SelectedIndex="{Binding ScreenIndex}">
     <md:TransitionerSlide>
       <!-- Clock -->
@@ -50,7 +52,12 @@
         <md:FadeWipe />
       </md:TransitionerSlide.BackwardWipe>
 
-      <Grid>
+      <md:DialogHost Identifier="Admin">
+      <md:DrawerHost IsLeftDrawerOpen="{Binding IsSettingsShown}">
+        <md:DrawerHost.LeftDrawerContent>
+          <views:Settings/>
+        </md:DrawerHost.LeftDrawerContent>
+        <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto"/>
           <RowDefinition Height="*"/>
@@ -91,7 +98,7 @@
               <DataGridTemplateColumn Header="Birth Date" SortMemberPath="BirthDate">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
-                    <TextBlock Text="{Binding BirthDate,StringFormat={}MMM\ d\,\ yyyy}" TextAlignment="Center" />
+                    <TextBlock Text="{Binding BirthDate,Converter={converters:DateConverter}}" TextAlignment="Center" />
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
                 <DataGridTemplateColumn.CellEditingTemplate>
@@ -105,24 +112,17 @@
                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                   Binding="{Binding CivilStatus,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
 
-              <DataGridTextColumn Header="Salary"
-                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                  Binding="{Binding Salary,StringFormat={}#\,##0\.00,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
-              <DataGridTextColumn Header="Rate"
-                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                  Binding="{Binding HourlyRate,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
-              <DataGridTextColumn Header="Hours/Week"
-                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                  Binding="{Binding HoursPerWeek,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              <md:MaterialDataGridComboBoxColumn
+                ItemsSource="{Binding Source={x:Static models:Job.Cache}}"
+                DisplayMemberPath="Name"
+                SelectedValueBinding="{Binding JobId}"
+                SelectedValuePath="Id"
+                Header="Designation" />
               
-              <DataGridTextColumn Header="Designation"
-                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
-                                  Binding="{Binding Designation,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
-
-              <DataGridTemplateColumn Header="Date Hired" SortMemberPath="BirthDate">
+               <DataGridTemplateColumn Header="Date Hired" SortMemberPath="BirthDate">
                 <DataGridTemplateColumn.CellTemplate>
                   <DataTemplate>
-                    <TextBlock Text="{Binding DateHired,StringFormat={}MMM\ d\,\ yyyy}" TextAlignment="Center" />
+                    <TextBlock Text="{Binding DateHired,Converter={converters:DateConverter}}" TextAlignment="Center" />
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
                 <DataGridTemplateColumn.CellEditingTemplate>
@@ -197,6 +197,9 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Grid.Row="0">
+              <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon Settings}"
+                      ToolTip="Settings"/>
+              <Rectangle Width="1" Fill="{StaticResource MaterialDesignDivider}"/>
               <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon WindowMinimize}"
                       Click="MinimizeClicked" />
               <Button Style="{StaticResource WindowCommandButton}"
@@ -213,6 +216,8 @@
 
         <views:EmployeeInfo Grid.Row="1" Grid.Column="1"/>
       </Grid>
+      </md:DrawerHost>
+      </md:DialogHost>
     </md:TransitionerSlide>
   </md:Transitioner>
 </Window>
