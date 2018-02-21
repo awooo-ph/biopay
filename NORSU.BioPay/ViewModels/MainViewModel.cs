@@ -84,7 +84,10 @@ namespace NORSU.BioPay.ViewModels
         public ICommand ShowAdminCommand => _showAdminCommand ?? (_showAdminCommand = new DelegateCommand(d =>
         {
             if (ScreenIndex != AdminIndex)
-                ScreenIndex = AdminIndex;
+            {
+                if(Employee.Cache.All(x=>!x.IsAdmin) || (Punch?.IsAdmin??false))
+                    ScreenIndex = AdminIndex;
+            }
             else
                 ScreenIndex = ClockIndex;
         }));
@@ -147,6 +150,7 @@ namespace NORSU.BioPay.ViewModels
             d =>
             {
                 IsSettingsShown = !IsSettingsShown;
+                Scanner.OnScan = null;
             }));
 
         private bool _IsSettingsShown;
@@ -184,6 +188,11 @@ namespace NORSU.BioPay.ViewModels
                 if (_currentEmployeeFingers != null) return _currentEmployeeFingers;
                 _currentEmployeeFingers = new ListCollectionView(FingerPrint.Cache);
                 _currentEmployeeFingers.Filter = FilterFinger;
+                Employees.CurrentChanged += (sender, args) =>
+                {
+                    if (Employees.IsAddingNew) return;
+                    _currentEmployeeFingers.Filter = FilterFinger;
+                };
                 return _currentEmployeeFingers;
             }
         }
@@ -202,6 +211,7 @@ namespace NORSU.BioPay.ViewModels
             if (!(Employees.CurrentItem is Employee employee)) return;
             
             var dlg = new AddFingerViewModel();
+            var dlg = new AddFingerViewModel(employee);
             Scanner.OnScan = dlg.Scan;
 
             var view = new PrintEnrollment() {DataContext = dlg};

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using DPFP;
 using DPFP.Capture;
@@ -46,7 +47,7 @@ namespace NORSU.BioPay.ViewModels
                 return null;
         }
 
-        public static FingerPrint ToFingerPrint(Sample sample)
+        public static FingerPrint ToFingerPrint(this Sample sample)
         {
             var features = sample.ExtractFeatures(DataPurpose.Verification);
 
@@ -132,6 +133,7 @@ namespace NORSU.BioPay.ViewModels
             }
             catch (Exception e)
             {
+                MessageBox.Show("Error connect to finger print scanner.", "Scanner not found");
                 Stop();
             }
 

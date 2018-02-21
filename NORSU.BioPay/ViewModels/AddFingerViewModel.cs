@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using DPFP;
 using DPFP.Processing;
+using DPFP.Verification;
+using MaterialDesignThemes.Wpf;
+using Models;
 
 namespace NORSU.BioPay.ViewModels
 {
     class AddFingerViewModel : ViewModelBase
     {
-        public AddFingerViewModel()
+        public AddFingerViewModel(Employee employee)
         {
             Fingers.Add(CurrentSample);
+            Employee = employee;
         }
+
+        private Employee Employee { get; set; }
         
         private FingerSample CurrentSample = new FingerSample();
         
@@ -66,7 +74,7 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
-        
+        private Verification Verifier = new Verification(2174);
 
         public void Scan(Sample sample)
         {
@@ -74,6 +82,23 @@ namespace NORSU.BioPay.ViewModels
             CurrentSample.IsWaiting = false;
             CurrentSample.IsValid = true;
 
+            var finger = sample.ToFingerPrint();
+            if (finger != null)
+            {
+                if (finger.Employee.IsDeleted)
+                {
+                    finger.Update(nameof(Employee.EmployeeId),Employee.Id);
+                    DialogHost.CloseDialogCommand.Execute(false,Application.Current.MainWindow);
+                    return;
+                }
+                
+                CurrentSample.IsValid = false;
+                IsValid = false;
+                HasError = true;
+                ErrorMessage = $"Finger already registered to {finger.Employee.Fullname}.";
+                return;
+            }
+            
             ResultThumbnail = CurrentSample.Picture;
             
             var features = sample.ExtractFeatures(DataPurpose.Enrollment);

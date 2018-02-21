@@ -43,6 +43,9 @@
                    Margin="7 0 0 0"
                    md:HintAssist.IsFloating="True" />
         </UniformGrid>
+        
+        
+        
         <Grid Margin="10">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -144,12 +147,12 @@
         </DataGrid>
 
       <StackPanel Orientation="Horizontal" Margin="10 40 10 10">
-        <md:PackIcon Kind="Lock" Height="24" Width="24" VerticalAlignment="Center" />
-        <TextBlock Text=" ADMIN AUTHENTICATION" FontSize="14pt" FontWeight="Bold" VerticalAlignment="Center" />
+        <md:PackIcon Kind="Key" Height="24" Width="24" VerticalAlignment="Center" />
+        <TextBlock Text=" ADMINISTRATORS" FontSize="14pt" FontWeight="Bold" VerticalAlignment="Center" />
       </StackPanel>
 
 
-      <ListBox Grid.Row="1" Margin="0 1"
+      <!--<ListBox Grid.Row="1" Margin="0 1"
                SelectedIndex="{Binding SelectedAuthenticationIndex}"
                x:Name="ListBox"
                HorizontalContentAlignment="Stretch">
@@ -174,8 +177,8 @@
         <ListBoxItem IsSelected="{Binding ElementName=Info,Path=IsSelected,Converter={converters:Inverter}}">
           <TextBlock Text="FINGER PRINT" TextAlignment="Center" />
         </ListBoxItem>
-      </ListBox>
-        <md:Transitioner VerticalAlignment="Stretch"
+      </ListBox>-->
+        <!--<md:Transitioner VerticalAlignment="Stretch"
                          SelectedIndex="{Binding SelectedAuthenticationIndex}"
                          x:Name="Transitioner"
                          Grid.Row="2">
@@ -192,9 +195,9 @@
                 </Setter.Value>
               </Setter>
             </Style>
-          </md:Transitioner.ItemContainerStyle>
+          </md:Transitioner.ItemContainerStyle>-->
 
-        <StackPanel>
+        <!--<StackPanel >
           <PasswordBox x:Name="CurrentPassword"
                        md:HintAssist.Hint="CURRENT PASSWORD"
                        md:HintAssist.IsFloating="True"/>
@@ -205,10 +208,11 @@
                        md:HintAssist.Hint="RETYPE PASSWORD"
                        md:HintAssist.IsFloating="True" />
           <Button Content="CHANGE PASSWORD" Margin="0 10"/>
-        </StackPanel>
+        </StackPanel>-->
           
           <StackPanel>
-          <ItemsControl ItemsSource="{Binding Admins}" Grid.IsSharedSizeScope="True">
+          <ItemsControl ItemsSource="{Binding Admins}" Grid.IsSharedSizeScope="True"
+                        Margin="0 10 0 20">
             <ItemsControl.ItemTemplate>
               <DataTemplate DataType="{x:Type models:Employee}">
                 <Grid>
@@ -217,10 +221,30 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                   </Grid.ColumnDefinitions>
-                  <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
-                         Width="24" Height="24" VerticalAlignment="Center"
-                         Margin="4"/>
-                  <StackPanel Margin="4" VerticalAlignment="Center"
+                  
+                <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       Visibility="{Binding HasPicture,Converter={converters:BooleanToVisibility}}"
+                       Stretch="UniformToFill"
+                       Width="32" Height="32" VerticalAlignment="Center"
+                       Margin="4" />
+                  <Grid
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding HasPicture,Converter={converters:BooleanToVisibility Collapsed,Visible}}"
+                    Margin="4">
+                    <Image Source="pack://application:,,,/user_male.jpg"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Stretch="UniformToFill"
+                           Visibility="{Binding Gender,Converter={converters:EqualityConverter ReturnType=Visibility, Operation=Equals,Operand={x:Static models:Sexes.Male}}}"
+                           Width="32" Height="32" />
+                    <Image Source="pack://application:,,,/user_profile_female.jpg"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Stretch="UniformToFill"
+                           Visibility="{Binding Gender,Converter={converters:EqualityConverter ReturnType=Visibility, Operation=Equals,Operand={x:Static models:Sexes.Female}}}"
+                           Width="32" Height="32" />
+                  </Grid>
+
+                <StackPanel Margin="4" VerticalAlignment="Center"
                               Grid.Column="1">
                     <TextBlock Text="{Binding Fullname}" FontWeight="Bold"/>
                     <TextBlock Text="{Binding Job.Name}"/>
@@ -239,9 +263,49 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
-            <Button Content="ADD NEW ADMIN" Command="{Binding AddNewAdminCommand}"/>
+            <Button Content="ADD NEW ADMIN" Command="{Binding AddAdminCommand}"
+                    Visibility="{Binding IsAddingAdmin,Converter={converters:BooleanToVisibility Collapsed,Visible}}"/>
+          <md:ColorZone BorderBrush="{StaticResource MaterialDesignDivider}"
+                        Visibility="{Binding IsAddingAdmin,Converter={converters:BooleanToVisibility}}"
+                          BorderThickness="1" CornerRadius="7">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <ProgressBar VerticalAlignment="Center" HorizontalAlignment="Center"
+                           Visibility="{Binding IsWaitingForAdminScan,Converter={converters:BooleanToVisibility}}"
+                           Style="{StaticResource MaterialDesignCircularProgressBar}"
+                           IsIndeterminate="True"
+                           Height="32"
+                           Width="32"
+                           Margin="10"/>
+              <Grid Grid.Column="0"
+                    Margin="10"
+                    Visibility="{Binding IsWaitingForAdminScan,Converter={converters:BooleanToVisibility Collapsed,Visible}}">
+                <md:PackIcon Kind="CloseCircle" Height="32" Width="32"
+                             Foreground="{StaticResource ValidationErrorBrush}"
+                             Visibility="{Binding IsAddingAdminError,Converter={converters:BooleanToVisibility}}"/>
+                <md:PackIcon Kind="CheckCircle" Height="32" Width="32"
+                             Foreground="{StaticResource PrimaryHueDarkBrush}"
+                             Visibility="{Binding IsAddingAdminError,Converter={converters:BooleanToVisibility Collapsed,Visible}}" />
+              </Grid>
+              <TextBlock Text="{Binding AddingAdminStatus}" FontSize="10pt"
+                         VerticalAlignment="Center"
+                         TextWrapping="Wrap"
+                         Grid.Column="1"/>
+              <Button Grid.Column="2"
+                      Height="Auto"
+                      VerticalAlignment="Stretch"
+                      Style="{StaticResource MaterialDesignFlatAccentButton}"
+                      Visibility="{Binding IsAddingAdminError,Converter={converters:BooleanToVisibility}}"
+                      Content="CANCEL"
+                      Command="{Binding CancelAddAdminCommand}"/>
+            </Grid>
+          </md:ColorZone>
           </StackPanel>
-          </md:Transitioner>
+          <!--</md:Transitioner>-->
     </StackPanel>
     </ScrollViewer>
 
