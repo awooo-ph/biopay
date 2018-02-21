@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DPFP;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using Models;
 using NORSU.BioPay.Views;
 
@@ -14,13 +17,45 @@ namespace NORSU.BioPay.ViewModels
 {
     class MainViewModel:ViewModelBase
     {
-        public const long ClockIndex = 0, AdminIndex = 1;
+        public const long ClockIndex = 0, AdminIndex = 1, PunchIndex=2;
         private MainViewModel()
         {
             
-            Messenger.Default.AddListener<Sample>(Messages.Scan, sample =>
+            Messenger.Default.AddListener<Sample>(Messages.Scan,async sample =>
             {
-                MessageBox.Show("asdf");
+                if (ScreenIndex == AdminIndex) return;
+
+                var finger = sample.ToFingerPrint();
+                if (finger != null)
+                {
+                    var prevDtr = DailyTimeRecord.GetTimeIn(finger.EmployeeId);
+                    if (prevDtr != null)
+                    {
+                        //prevDtr.Update(nameof(DailyTimeRecord.TimeOut), DateTime.Now);
+                        prevDtr.TimeOut = DateTime.Now;
+                        prevDtr.Save();
+                    }
+                    else
+                    {
+                        var dtr = new DailyTimeRecord(finger.EmployeeId);
+                        dtr.Save();
+                    }
+
+                    PunchAM = DailyTimeRecord.Cache
+                        .OrderByDescending(x=>x.TimeIn)
+                        .FirstOrDefault(x => x.EmployeeId == finger.EmployeeId
+                                             && x.TimeIn.Date == DateTime.Now.Date
+                                             && x.TimeIn.Hour < 12);
+
+                    PunchPM = DailyTimeRecord.Cache
+                        .OrderByDescending(x => x.TimeIn)
+                        .FirstOrDefault(x => x.EmployeeId == finger.EmployeeId
+                                             && x.TimeIn.Date == DateTime.Now.Date
+                                             && x.TimeIn.Hour >= 12);
+
+                    Punch = finger.Employee;
+                    ShowPunch();
+                }
             });
 
             if (Models.User.Cache.Count == 0 && Models.Employee.Cache.Count==0)
@@ -29,10 +64,23 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
+        private DateTime _lastPunch;
+        private async void ShowPunch()
+        {
+            _lastPunch = DateTime.Now;
+            if (ScreenIndex == PunchIndex) return;
+            ScreenIndex = PunchIndex;
+
+            while ((DateTime.Now - _lastPunch).TotalMilliseconds < 7777)
+                await TaskEx.Delay(111);
+            if(ScreenIndex!=AdminIndex)
+                ScreenIndex = ClockIndex;
+        }
+
         private static MainViewModel _instance;
         public static MainViewModel Instance => _instance ?? (_instance = new MainViewModel());
 
-        private long _ScreenIndex ;
+        private long _ScreenIndex = ClockIndex;
 
         public long ScreenIndex
         {
@@ -46,6 +94,44 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
+        private Employee _Punch;
+
+        public Employee Punch
+        {
+            get => _Punch;
+            set
+            {
+                if(value == _Punch)
+                    return;
+                _Punch = value;
+                OnPropertyChanged(nameof(Punch));
+            }
+        }
+
+        private DailyTimeRecord _PunchAM;
+
+        public DailyTimeRecord PunchAM
+        {
+            get => _PunchAM;
+            set
+            {
+                _PunchAM = value;
+                OnPropertyChanged(nameof(PunchAM));
+            }
+        }
+
+        private DailyTimeRecord _PunchPM;
+
+        public DailyTimeRecord PunchPM
+        {
+            get => _PunchPM;
+            set
+            {
+                _PunchPM = value;
+                OnPropertyChanged(nameof(PunchPM));
+            }
+        }
+        
         private int _SelectedAuthenticationIndex;
 
         public int SelectedAuthenticationIndex
@@ -210,7 +296,6 @@ namespace NORSU.BioPay.ViewModels
         {
             if (!(Employees.CurrentItem is Employee employee)) return;
             
-            var dlg = new AddFingerViewModel();
             var dlg = new AddFingerViewModel(employee);
             Scanner.OnScan = dlg.Scan;
 

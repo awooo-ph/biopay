@@ -114,5 +114,17 @@ namespace NORSU.BioPay.Properties {
                 this["DiscardUnclosed"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public long MinimumTime {
+            get {
+                return ((long)(this["MinimumTime"]));
+            }
+            set {
+                this["MinimumTime"] = value;
+            }
+        }
     }
 }
