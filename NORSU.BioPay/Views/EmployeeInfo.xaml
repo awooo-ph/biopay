@@ -46,10 +46,25 @@
           </ItemsPanelTemplate>
         </ListBox.ItemsPanel>
         <ListBoxItem x:Name="Info" IsSelected="True">
-          <TextBlock Text="INFORMATION" TextAlignment="Center"/>
+          <StackPanel>
+            <md:PackIcon Kind="Account" Height="32" Width="32"
+                         HorizontalAlignment="Center"/>
+            <TextBlock Text="INFORMATION" TextAlignment="Center" FontSize="9pt"/>
+          </StackPanel>
         </ListBoxItem>
-        <ListBoxItem IsSelected="{Binding ElementName=Info,Path=IsSelected,Converter={converters:Inverter}}">
-          <TextBlock Text="TIME RECORD" TextAlignment="Center"/>
+        <ListBoxItem>
+          <StackPanel>
+            <md:PackIcon Kind="Fingerprint" Height="32" Width="32"
+                         HorizontalAlignment="Center" />
+            <TextBlock Text="FINGER PRINTS" TextAlignment="Center" FontSize="9pt" />
+          </StackPanel>
+        </ListBoxItem>
+        <ListBoxItem>
+          <StackPanel>
+            <md:PackIcon Kind="CalendarClock" Height="32" Width="32"
+                         HorizontalAlignment="Center" />
+            <TextBlock Text="TIME RECORD" TextAlignment="Center" FontSize="9pt" />
+          </StackPanel>
         </ListBoxItem>
       </ListBox>
 
@@ -110,11 +125,14 @@
             <StackPanel Margin="20" Grid.Row="1">
               <Button Style="{StaticResource MaterialDesignFlatButton}" Content="CHANGE PICTURE"
                       Margin="0 0 0 20"/>
-              <TextBox Text="{Binding Employees/Designation,UpdateSourceTrigger=PropertyChanged}"
-                       md:HintAssist.Hint="Designation"
-                       md:HintAssist.IsFloating="True"
-                       Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/Department,UpdateSourceTrigger=PropertyChanged}"
+
+                <TextBox Text="{Binding Employees/HoursPerWeek,UpdateSourceTrigger=PropertyChanged}"
+                         Visibility="{Binding Employees/Job.Teaching,Converter={converters:BooleanToVisibility},FallbackValue=Collapsed}"
+                         md:HintAssist.Hint="Hours Per Week"
+                         md:HintAssist.IsFloating="True"
+                         Margin="0 0 0 10" />
+              
+                <TextBox Text="{Binding Employees/Department,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="Department"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
@@ -152,6 +170,81 @@
             <Button Content="SAVE" Margin="10 0 0 0" Command="{Binding Employees/SaveCommand}"/>
           </UniformGrid>
         </Grid>
+        
+        <!--Finger Prints-->
+        
+          <Grid>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="*"/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding CurrentEmployeeFingers}" Grid.IsSharedSizeScope="True">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:FingerPrint}">
+                  <Grid Margin="7">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="Auto"/>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <md:Card Margin="7" Padding="0">
+                    <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
+                           Margin="0 -10 0 0"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Stretch="UniformToFill"
+                           VerticalAlignment="Center"
+                           Height="77"/>
+                    </md:Card>
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center">
+                      <TextBlock Text="{Binding Description}" FontWeight="Bold"
+                                 Visibility="{Binding EditMode,Converter={converters:BooleanToVisibility Collapsed,Visible}}"/>
+                      <TextBox Text="{Binding Description}"
+                               Visibility="{Binding EditMode,Converter={converters:BooleanToVisibility}}" />
+                      <UniformGrid Rows="1">
+                        <StackPanel>
+                          <TextBlock Text="Times Used: "/>
+                          <TextBlock Text="{Binding Usage}"/>
+                        </StackPanel>
+                        <StackPanel>
+                          <TextBlock Text="Last Used: " />
+                          <TextBlock Text="{Binding LastUsed,StringFormat=g}" />
+                        </StackPanel>
+                      </UniformGrid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                      <Button Content="{md:PackIcon Pencil}" ToolTip="Delete"
+                              Command="{Binding EditModeCommand}"
+                              Visibility="{Binding EditMode,Converter={converters:BooleanToVisibility Collapsed,Visible}}"
+                              Height="Auto" Width="Auto"
+                              Padding="4 2"
+                              Style="{StaticResource MaterialDesignFlatAccentButton}"/>
+                      <Button Content="{md:PackIcon Check}" ToolTip="Delete"
+                              Command="{Binding SaveCommand}"
+                              Visibility="{Binding EditMode,Converter={converters:BooleanToVisibility}}"
+                              Height="Auto" Width="Auto"
+                              Padding="4 2"
+                              Style="{StaticResource MaterialDesignFlatAccentButton}" />
+                      <Button Content="{md:PackIcon Close}" ToolTip="Delete"
+                              Margin="0 4 0 0"
+                              Command="{Binding DeleteCommand}"
+                              Height="Auto" Width="Auto"
+                              Padding="4 2"
+                              Style="{StaticResource MaterialDesignFlatAccentButton}" />
+                    </StackPanel>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+
+          <UniformGrid Rows="1" Grid.Row="1" Margin="10">
+            <Button Content="DELETE ALL" Margin="10" Command="{Binding DeleteFingersCommand}"/>
+            <Button Content="ADD NEW" Margin="10" Command="{Binding AddFingerCommand}"/>
+          </UniformGrid>
+        </Grid>
+        
 
         <DataGrid ItemsSource="{Binding DTR}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   IsReadOnly="True"

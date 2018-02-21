@@ -152,7 +152,7 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
-        public Action<Sample> OnScan { get; set; } = null;
+        public static Action<Sample> OnScan { get; set; } = null;
         
         public void OnComplete(object Capture, string ReaderSerialNumber, Sample Sample)
         {
