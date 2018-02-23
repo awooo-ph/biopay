@@ -262,8 +262,13 @@
             <Button Content="ADD NEW" Margin="10" Command="{Binding AddFingerCommand}"/>
           </UniformGrid>
         </Grid>
-        
 
+
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
         <DataGrid ItemsSource="{Binding DTR}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   IsReadOnly="True"
                   CanUserReorderColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False">
@@ -312,6 +317,16 @@
             <DataGridTextColumn Header="HOURS" Binding="{Binding TimeSpan,Converter={converters:TimeSpanConverter}}"/>
           </DataGrid.Columns>
         </DataGrid>
+
+          <UniformGrid Rows="1"
+                       Margin="10"
+                       Grid.Row="1">
+            <Rectangle/>
+          <Button Content="PRINT"
+                  Margin="10"
+                  Command="{Binding PrintDtrCommand}"/>
+          </UniformGrid>
+        </Grid>
       </md:Transitioner>
     </Grid>
 
