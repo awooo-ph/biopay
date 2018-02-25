@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,11 +8,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using BioPay.Models;
 using DPFP;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using Models;
 using NORSU.BioPay.Views;
+using Xceed.Words.NET;
 
 namespace NORSU.BioPay.ViewModels
 {
@@ -449,29 +452,185 @@ namespace NORSU.BioPay.ViewModels
             {
                 if (!(Employees.CurrentItem is Employee emp)) return;
                 
-                    try
+                try
+                {
+                    var dialog = new OpenFileDialog
                     {
-                        var dialog = new OpenFileDialog
-                        {
-                            Multiselect = false,
-                            Filter = @"All Images|*.BMP;*.JPG;*.JPEG;*.GIF;*.PNG|
-                            BMP Files|*.BMP;*.DIB;*.RLE|
-                            JPEG Files|*.JPG;*.JPEG;*.JPE;*.JFIF|
-                            GIF Files|*.GIF|
-                            PNG Files|*.PNG",
-                            Title = "Select Picture",
-                        };
-                        if (!(dialog.ShowDialog() ?? false))
-                            return;
+                        Multiselect = false,
+                        Filter = @"All Images|*.BMP;*.JPG;*.JPEG;*.GIF;*.PNG|
+                        BMP Files|*.BMP;*.DIB;*.RLE|
+                        JPEG Files|*.JPG;*.JPEG;*.JPE;*.JFIF|
+                        GIF Files|*.GIF|
+                        PNG Files|*.PNG",
+                        Title = "Select Picture",
+                    };
+                    if (!(dialog.ShowDialog() ?? false))
+                        return;
                         
-                        emp.Update(nameof(Employee.Picture),File.ReadAllBytes(dialog.FileName));
-                    }
-                    catch (Exception e)
-                    {
-                        //
-                    }
-                
+                    emp.Update(nameof(Employee.Picture),File.ReadAllBytes(dialog.FileName));
+                }
+                catch (Exception e)
+                {
+                    //
+                }
                 
             },d=>Employees.CurrentItem!=null));
+
+        internal static void Print(string path)
+        {
+            var info = new ProcessStartInfo(path);
+            info.CreateNoWindow = true;
+            info.WindowStyle = ProcessWindowStyle.Hidden;
+            info.UseShellExecute = true;
+            info.Verb = "PrintTo";
+            try
+            {
+                Process.Start(info);
+            } catch(Exception e)
+            {
+                //
+            }
+        }
+
+        private bool _IsPrinting;
+
+        public bool IsPrinting
+        {
+            get => _IsPrinting;
+            set
+            {
+                if(value == _IsPrinting)
+                    return;
+                _IsPrinting = value;
+                OnPropertyChanged(nameof(IsPrinting));
+            }
+        }
+
+        private ICommand _printSuggestionsCommand;
+
+        public ICommand PrintDtrCommand =>
+            _printSuggestionsCommand ?? (_printSuggestionsCommand = new DelegateCommand(
+            d =>
+            {
+                if (IsPrinting) return;
+                IsPrinting = true;
+                Task.Factory.StartNew(() =>
+                {
+                    if (!(Employees.CurrentItem is Employee employee)) return;
+                    
+                    if(!Directory.Exists("Temp"))
+                        Directory.CreateDirectory("Temp");
+
+                    var temp = Path.Combine("Temp", $"DTR [{DateTime.Now:yy-MMM-dd}].docx");
+                    var template = $@"Templates\DTR.docx";
+                    
+                    using(var doc = DocX.Load(template))
+                    {
+                        var tbl = doc.Tables.First();
+                        
+                        for (var day = 1; day < 32; day++)
+                        {
+                            var day1 = day;
+                            
+                            if(!DailyTimeRecord.Cache.Any(x=> x.TimeIn.Day == day1 && x.EmployeeId == employee.Id)) continue;
+                            
+                            var records = DailyTimeRecord.Cache.Where(x =>
+                                x.TimeIn.Day == day1 && x.EmployeeId == employee.Id).ToList();
+                                
+                            var r = tbl.Rows[day+1];
+                            
+                            var timedIn = false;
+                            var timeOut = DateTime.MinValue;
+
+                            foreach (var record in records)
+                            {
+                                var column = 3;
+                                if (record.TimeIn.TimeOfDay.Hours < 12)
+                                    column = 1;
+
+                                if (!timedIn)
+                                {
+                                    timedIn = true;
+                                    var p = r.Cells[column].Paragraphs.First()
+                                        .Append(record.TimeIn.ToString("hh:mm tt"));
+                                    p.LineSpacingAfter = 0;
+                                    p.Alignment = Alignment.center;
+                                }
+
+                                if (timeOut < record.TimeOut)
+                                {
+                                    timeOut = record.TimeOut.Value;
+                                    var p2 = r.Cells[column + 1].Paragraphs.First();
+                                    p2.ReplaceText(p2.Text,"");
+                                    p2.Append(record.TimeOut?.ToString("hh:mm tt"));
+                                    p2.LineSpacingAfter = 0;
+                                    p2.Alignment = Alignment.center;
+                                }
+                            }
+
+                            var total = TimeSpan.FromSeconds(records.Sum(x => x.TimeSpan?.TotalSeconds)??0);
+                            
+                            var p3 = r.Cells[7].Paragraphs.First().Append($"{total.Hours:00}:{total.Minutes:00}:{total.Seconds:00}");
+                            p3.LineSpacingAfter = 0;
+                            p3.Alignment = Alignment.center;
+                            
+                        }
+
+                        var totalTime = TimeSpan.FromSeconds(DailyTimeRecord.Cache.Where(x=>x.EmployeeId==employee.Id)
+                                                                 .Sum(x => x.TimeSpan?.TotalSeconds) ?? 0);
+
+                        var p4 = tbl.Rows[33].Cells[3].Paragraphs.First()
+                            .Append($"{totalTime.Hours:00}:{totalTime.Minutes:00}:{totalTime.Seconds:00}");
+                        p4.LineSpacingAfter = 0;
+                        p4.Alignment = Alignment.center;
+                        
+                        doc.ReplaceText("[NAME]", employee.Fullname);
+                        doc.ReplaceText("[DESIGNATION]", employee.Job?.Name??"N/A");
+                        
+                        try
+                        {
+                            File.Delete(temp);
+                        } catch(Exception e)
+                        {
+                            //
+                        }
+
+                        doc.SaveAs(temp);
+                    }
+                    
+                    Print(temp);
+                    IsPrinting = false;
+                });
+            }));
+
+        private ListCollectionView _EmployeeSchedules;
+        public ListCollectionView EmployeeSchedules
+        {
+            get
+            {
+                if (_EmployeeSchedules != null) return _EmployeeSchedules;
+                _EmployeeSchedules = new ListCollectionView(Schedule.Cache);
+                _EmployeeSchedules.Filter = FilterSchedule;
+                Employees.CurrentChanged += (sender, args) =>
+                {
+                    if (Employees.IsAddingNew)
+                        return;
+                    _EmployeeSchedules.Filter = FilterSchedule;
+                };
+                _EmployeeSchedules.CurrentChanged += (sender, args) =>
+                {
+                    if (_EmployeeSchedules.IsAddingNew) return;
+                    Schedule.SelectedItem = (Schedule) _EmployeeSchedules.CurrentItem;
+                };
+                return _EmployeeSchedules;
+            }
+        }
+
+        private bool FilterSchedule(object o)
+        {
+            if (!(o is Schedule sched)) return false;
+            if (!(Employees.CurrentItem is Employee emp)) return false;
+            return sched.EmployeeId == emp.Id;
+        }
     }
 }

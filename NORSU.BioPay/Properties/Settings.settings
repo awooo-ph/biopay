@@ -5,17 +5,17 @@
     <Setting Name="EnableSchedules" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="TimeInAM" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="TimeInAM" Type="System.String" Scope="User">
+      <Value Profile="(Default)">7:00AM</Value>
     </Setting>
-    <Setting Name="TimeOutAM" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="TimeOutAM" Type="System.String" Scope="User">
+      <Value Profile="(Default)">12:00PM</Value>
     </Setting>
-    <Setting Name="TimeInPM" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="TimeInPM" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1:00PM</Value>
     </Setting>
-    <Setting Name="TimeOutPM" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="TimeOutPM" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5:00PM</Value>
     </Setting>
     <Setting Name="TrimOvertime" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

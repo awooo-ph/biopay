@@ -50,21 +50,28 @@
           <StackPanel>
             <md:PackIcon Kind="Account" Height="32" Width="32"
                          HorizontalAlignment="Center"/>
-            <TextBlock Text="INFORMATION" TextAlignment="Center" FontSize="9pt"/>
+            <TextBlock Text="INFORMATION" TextAlignment="Center" FontSize="7pt"/>
           </StackPanel>
         </ListBoxItem>
         <ListBoxItem>
           <StackPanel>
             <md:PackIcon Kind="Fingerprint" Height="32" Width="32"
                          HorizontalAlignment="Center" />
-            <TextBlock Text="FINGER PRINTS" TextAlignment="Center" FontSize="9pt" />
+            <TextBlock Text="BIOMETRIC" TextAlignment="Center" FontSize="7pt" />
+          </StackPanel>
+        </ListBoxItem>
+        <ListBoxItem>
+          <StackPanel>
+            <md:PackIcon Kind="CalendarMultiple" Height="32" Width="32"
+                         HorizontalAlignment="Center" />
+            <TextBlock Text="SCHEDULES" TextAlignment="Center" FontSize="7pt" />
           </StackPanel>
         </ListBoxItem>
         <ListBoxItem>
           <StackPanel>
             <md:PackIcon Kind="CalendarClock" Height="32" Width="32"
                          HorizontalAlignment="Center" />
-            <TextBlock Text="TIME RECORD" TextAlignment="Center" FontSize="9pt" />
+            <TextBlock Text="TIME RECORD" TextAlignment="Center" FontSize="7pt" />
           </StackPanel>
         </ListBoxItem>
       </ListBox>
@@ -93,13 +100,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MinWidth="333">
-          <Grid Margin="0 10">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="Auto"/>
-              <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Image Source="{Binding Employees/Picture,Converter={converters:BytesToImage}}"
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MinWidth="333">
+            <Grid Margin="0 10">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Image Source="{Binding Employees/Picture,Converter={converters:BytesToImage}}"
                    RenderOptions.BitmapScalingMode="HighQuality"
                    Visibility="{Binding Employees/HasPicture,Converter={converters:BooleanToVisibility}}"
                    Stretch="UniformToFill"
@@ -107,24 +114,24 @@
                    HorizontalAlignment="Center"
                    Height="256"
                    Margin="20 20 20 0" />
-            <Grid
+              <Grid
               HorizontalAlignment="Center"
               Visibility="{Binding Employees/HasPicture,Converter={converters:BooleanToVisibility Collapsed,Visible}}"
               Margin="20 20 20 0">
-              <Image Source="pack://application:,,,/user_male.jpg"
+                <Image Source="pack://application:,,,/user_male.jpg"
                      RenderOptions.BitmapScalingMode="HighQuality"
                      Stretch="UniformToFill"
                      Visibility="{Binding Employees/Gender,Converter={converters:EqualityConverter ReturnType=Visibility, Operation=Equals,Operand={x:Static models:Sexes.Male}}}"
                      Width="256" Height="256"/>
-              <Image Source="pack://application:,,,/user_profile_female.jpg"
+                <Image Source="pack://application:,,,/user_profile_female.jpg"
                      RenderOptions.BitmapScalingMode="HighQuality"
                      Stretch="UniformToFill"
                      Visibility="{Binding Employees/Gender,Converter={converters:EqualityConverter ReturnType=Visibility, Operation=Equals,Operand={x:Static models:Sexes.Female}}}"
                      Width="256" Height="256" />
-            </Grid>
-            
-            <StackPanel Margin="20" Grid.Row="1">
-              <Button Style="{StaticResource MaterialDesignFlatButton}" Content="CHANGE PICTURE"
+              </Grid>
+
+              <StackPanel Margin="20" Grid.Row="1">
+                <Button Style="{StaticResource MaterialDesignFlatButton}" Content="CHANGE PICTURE"
                       Command="{Binding ChangePictureCommand}"
                       Margin="0 0 0 20"/>
 
@@ -133,54 +140,53 @@
                          md:HintAssist.Hint="Hours Per Week"
                          md:HintAssist.IsFloating="True"
                          Margin="0 0 0 10" />
-              
+
                 <TextBox Text="{Binding Employees/Department,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="Department"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/Campus,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Employees/Campus,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="Campus"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/Appontment,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Employees/Appontment,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="Appointment Status"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/EmploymentStatus,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Employees/EmploymentStatus,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="Employment Status"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/Pagibig,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Employees/Pagibig,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="Pag-ibig Number"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/PhilHealth,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Employees/PhilHealth,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="PhilHealth Number"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-              <TextBox Text="{Binding Employees/GSIS,UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding Employees/GSIS,UpdateSourceTrigger=PropertyChanged}"
                        md:HintAssist.Hint="GSIS Number"
                        md:HintAssist.IsFloating="True"
                        Margin="0 0 0 10" />
-            </StackPanel>
-          </Grid>
-          
-        </ScrollViewer>
+              </StackPanel>
+            </Grid>
+
+          </ScrollViewer>
 
           <UniformGrid Margin="20" Rows="1" Grid.Row="1">
             <Button Content="DELETE" Margin="0 0 10 0" Command="{Binding Employees/DeleteCommand}"/>
             <Button Content="SAVE" Margin="10 0 0 0" Command="{Binding Employees/SaveCommand}"/>
           </UniformGrid>
         </Grid>
-        
+
         <!--Finger Prints-->
-        
-          <Grid>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="*"/>
-              <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <ItemsControl ItemsSource="{Binding CurrentEmployeeFingers}" Grid.IsSharedSizeScope="True">
               <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:FingerPrint}">
@@ -192,7 +198,7 @@
                     </Grid.ColumnDefinitions>
                     <md:Card Margin="7" Padding="0">
                       <Grid>
-                    <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
+                        <Image Source="{Binding Picture,Converter={converters:BytesToImage}}"
                            Margin="0 -10 0 0"
                            RenderOptions.BitmapScalingMode="HighQuality"
                            Stretch="UniformToFill"
@@ -263,72 +269,99 @@
           </UniformGrid>
         </Grid>
 
+        <!--Class Schedules-->
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
 
+          <DataGrid ItemsSource="{Binding EmployeeSchedules}"
+                    AutoGenerateColumns="False"
+                   IsSynchronizedWithCurrentItem="True">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="Description"
+                                  Binding="{Binding Description}"/>
+              <DataGridTextColumn Header="Weekly Hours"
+                                  Binding="{Binding TotalSpan,Converter={converters:TimeSpanConverter}}"/>
+            </DataGrid.Columns>
+          </DataGrid>
+
+          <Rectangle Height="1" Fill="{StaticResource MaterialDesignDivider}"
+                     HorizontalAlignment="Left"
+                     Margin="0 10"
+                     Grid.Row="1"/>
+          <DataGrid Margin="1 0 0 0"
+                    Grid.Row="1"
+                    ItemsSource="{Binding EmployeeSchedules/Items}"/>
+        </Grid>
+
+        <!--Daily Time Record-->
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
-        <DataGrid ItemsSource="{Binding DTR}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+          <DataGrid ItemsSource="{Binding DTR}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
                   IsReadOnly="True"
                   CanUserReorderColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False">
-          <DataGrid.GroupStyle>
-            <GroupStyle>
-              <GroupStyle.ContainerStyle>
-                <Style TargetType="{x:Type GroupItem}">
-                  <Setter Property="Template">
-                    <Setter.Value>
-                      <ControlTemplate TargetType="{x:Type GroupItem}">
-                        <StackPanel Margin="0 4 0 0">
-                          <Grid>
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="Auto" />
-                              <ColumnDefinition Width="*" />
-                              <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <md:PackIcon Kind="CalendarToday"
+            <DataGrid.GroupStyle>
+              <GroupStyle>
+                <GroupStyle.ContainerStyle>
+                  <Style TargetType="{x:Type GroupItem}">
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                          <StackPanel Margin="0 4 0 0">
+                            <Grid>
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                              </Grid.ColumnDefinitions>
+                              <md:PackIcon Kind="CalendarToday"
                                          Margin="4 0 0 0"
                                          VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding Name}"
+                              <TextBlock Text="{Binding Name}"
                                        Grid.Column="1"
                                        VerticalAlignment="Center"
                                        FontWeight="Bold"
                                        Margin="4 7 10 7" />
-                            <TextBlock Text="{Binding Converter={converters:DtrGroupConverter}}"
+                              <TextBlock Text="{Binding Converter={converters:DtrGroupConverter}}"
                                        FontWeight="Bold"
                                        Margin="10 7 8 7"
                                        VerticalAlignment="Center"
                                        Grid.Column="2" />
-                          </Grid>
-                          <ItemsPresenter />
-                        </StackPanel>
-                      </ControlTemplate>
-                    </Setter.Value>
-                  </Setter>
-                </Style>
-              </GroupStyle.ContainerStyle>
+                            </Grid>
+                            <ItemsPresenter />
+                          </StackPanel>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </GroupStyle.ContainerStyle>
 
-            </GroupStyle>
-          </DataGrid.GroupStyle>
-          
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="TIME-IN" Binding="{Binding TimeIn,StringFormat={}h:mm\ tt}" />
-            <DataGridTextColumn Header="TIME-OUT" Binding="{Binding TimeOut,StringFormat={}h:mm\ tt}" />
-            <DataGridTextColumn Header="HOURS" Binding="{Binding TimeSpan,Converter={converters:TimeSpanConverter}}"/>
-          </DataGrid.Columns>
-        </DataGrid>
+              </GroupStyle>
+            </DataGrid.GroupStyle>
+
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="TIME-IN" Binding="{Binding TimeIn,StringFormat={}h:mm\ tt}" />
+              <DataGridTextColumn Header="TIME-OUT" Binding="{Binding TimeOut,StringFormat={}h:mm\ tt}" />
+              <DataGridTextColumn Header="HOURS" Binding="{Binding TimeSpan,Converter={converters:TimeSpanConverter}}"/>
+            </DataGrid.Columns>
+          </DataGrid>
 
           <UniformGrid Rows="1"
                        Margin="10"
                        Grid.Row="1">
             <Rectangle/>
-          <Button Content="PRINT"
+            <Button Content="PRINT"
                   Margin="10"
                   Command="{Binding PrintDtrCommand}"/>
           </UniformGrid>
         </Grid>
       </md:Transitioner>
     </Grid>
-
   </md:ColorZone>
 </UserControl>

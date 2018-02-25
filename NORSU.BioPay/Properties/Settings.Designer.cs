@@ -37,9 +37,10 @@ namespace NORSU.BioPay.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.DateTime TimeInAM {
+        [global::System.Configuration.DefaultSettingValueAttribute("7:00AM")]
+        public string TimeInAM {
             get {
-                return ((global::System.DateTime)(this["TimeInAM"]));
+                return ((string)(this["TimeInAM"]));
             }
             set {
                 this["TimeInAM"] = value;
@@ -48,9 +49,10 @@ namespace NORSU.BioPay.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.DateTime TimeOutAM {
+        [global::System.Configuration.DefaultSettingValueAttribute("12:00PM")]
+        public string TimeOutAM {
             get {
-                return ((global::System.DateTime)(this["TimeOutAM"]));
+                return ((string)(this["TimeOutAM"]));
             }
             set {
                 this["TimeOutAM"] = value;
@@ -59,9 +61,10 @@ namespace NORSU.BioPay.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.DateTime TimeInPM {
+        [global::System.Configuration.DefaultSettingValueAttribute("1:00PM")]
+        public string TimeInPM {
             get {
-                return ((global::System.DateTime)(this["TimeInPM"]));
+                return ((string)(this["TimeInPM"]));
             }
             set {
                 this["TimeInPM"] = value;
@@ -70,9 +73,10 @@ namespace NORSU.BioPay.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.DateTime TimeOutPM {
+        [global::System.Configuration.DefaultSettingValueAttribute("5:00PM")]
+        public string TimeOutPM {
             get {
-                return ((global::System.DateTime)(this["TimeOutPM"]));
+                return ((string)(this["TimeOutPM"]));
             }
             set {
                 this["TimeOutPM"] = value;
