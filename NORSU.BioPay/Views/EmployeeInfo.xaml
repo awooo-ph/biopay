@@ -8,6 +8,8 @@
              xmlns:converters="clr-namespace:NORSU.BioPay.Converters"
              xmlns:models="http://norsu-g.biopay/models"
              xmlns:viewModels="clr-namespace:NORSU.BioPay.ViewModels"
+             xmlns:bioPay="clr-namespace:NORSU.BioPay"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
   <md:ColorZone Grid.Row="1" Grid.Column="1"
@@ -273,17 +275,23 @@
         <Grid>
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
           <DataGrid ItemsSource="{Binding EmployeeSchedules}"
-                    AutoGenerateColumns="False"
-                   IsSynchronizedWithCurrentItem="True">
+                    IsSynchronizedWithCurrentItem="True"
+                    AutoGenerateColumns="False">
             <DataGrid.Columns>
-              <DataGridTextColumn Header="Description"
+              
+              <DataGridTextColumn Header="DESCRIPTION"
+                                  CanUserResize="False"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                   Binding="{Binding Description}"/>
-              <DataGridTextColumn Header="Weekly Hours"
+              <DataGridTextColumn Header="WEEKLY HOURS"
+                                  CanUserResize="False"
+                                  IsReadOnly="True"
                                   Binding="{Binding TotalSpan,Converter={converters:TimeSpanConverter}}"/>
             </DataGrid.Columns>
           </DataGrid>
@@ -292,9 +300,25 @@
                      HorizontalAlignment="Left"
                      Margin="0 10"
                      Grid.Row="1"/>
+
           <DataGrid Margin="1 0 0 0"
-                    Grid.Row="1"
-                    ItemsSource="{Binding EmployeeSchedules/Items}"/>
+                    CanUserAddRows="{Binding EmployeeSchedules.CurrentItem,Converter={converters:IsScheduleConverter}}"
+                    Grid.Row="2" AutoGenerateColumns="False"
+                    ItemsSource="{Binding EmployeeSchedules/Items}">
+            <DataGrid.Columns>
+              <md:MaterialDataGridComboBoxColumn ItemsSourceBinding="{Binding Source={bioPay:EnumBinding EnumType={x:Type system:DayOfWeek}}}"
+                                                 SelectedItemBinding="{Binding Day,Mode=TwoWay}"
+                                                 Header="DAY"/>
+              <DataGridTextColumn Header="START TIME" Binding="{Binding StartTime, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"/>
+              <DataGridTextColumn Header="END TIME"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding EndTime, ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              <DataGridTextColumn Header="TIME SPAN"
+                                  IsReadOnly="True"
+                                  Binding="{Binding Span,Converter={converters:TimeSpanConverter}}"/>
+            </DataGrid.Columns>
+          </DataGrid>
         </Grid>
 
         <!--Daily Time Record-->

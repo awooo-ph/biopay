@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using BioPay.Models;
 using DPFP;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Win32;
 using Models;
 using NORSU.BioPay.Views;
 using Xceed.Words.NET;
+using Settings = NORSU.BioPay.Properties.Settings;
 
 namespace NORSU.BioPay.ViewModels
 {
@@ -200,6 +200,11 @@ namespace NORSU.BioPay.ViewModels
             {
                 if (_employees != null) return _employees;
                 _employees = new ListCollectionView(Employee.Cache);
+                _employees.CurrentChanged += (sender, args) =>
+                {
+                    if (_employees.IsAddingNew) return;
+                    Employee.SelectedItem = (Employee) _employees.CurrentItem;
+                };
                 return _employees;
             }
         }
@@ -603,6 +608,221 @@ namespace NORSU.BioPay.ViewModels
                 });
             }));
 
+        private string _PayrollMonth;
+
+        public string PayrollMonth
+        {
+            get => _PayrollMonth;
+            set
+            {
+                if(value == _PayrollMonth)
+                    return;
+                _PayrollMonth = value;
+                OnPropertyChanged(nameof(PayrollMonth));
+            }
+        }
+        
+        private ICommand _printPayrollCommand;
+
+        public ICommand PrintPayrollCommand => _printPayrollCommand ?? (_printPayrollCommand = new DelegateCommand(d =>
+        {
+            if (IsPrinting)
+                return;
+            IsPrinting = true;
+            Task.Factory.StartNew(() =>
+            {
+                var month = DateTime.Now;
+                if (!DateTime.TryParse(PayrollMonth, out month))
+                {
+                    MessageBox.Show("Please enter a valid month to generate payroll for.", "Invalid Month");
+                    return;
+                }
+
+                if (!Directory.Exists("Temp"))
+                    Directory.CreateDirectory("Temp");
+
+                var number = 0;
+                var page = 1;
+
+
+                var template = $@"Templates\Payroll.docx";
+
+                var doc = DocX.Load(template);
+                doc.ReplaceText("[MONTH]", month.ToString("MMMM yyyy"));
+                var hasPage = false;
+                foreach (var employee in Employee.Cache)
+                {
+                    hasPage = true;
+                    var tbl = doc.Tables.First();
+
+                    number++;
+
+                    var row = tbl.Rows[number];
+                    
+                    var p = row.Cells[0].Paragraphs.First()
+                        .Append(number.ToString());
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.center;
+
+                    p = row.Cells[1].Paragraphs.First()
+                        .Append(employee.Fullname);
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.center;
+
+                    p = row.Cells[2].Paragraphs.First().Append(employee.Job?.Name ?? "N/A");
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.center;
+
+                    p = row.Cells[3].Paragraphs.First().Append(employee.Job?.Rate.ToString("#,##0.00") ?? "N/A");
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.right;
+
+                    var hours = GetHours(employee,month);
+
+                    p = row.Cells[4].Paragraphs.First().Append($"{hours.TotalHours:0.00}");
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.right;
+
+                    var salary = hours.TotalHours * (employee.Job?.Rate ?? 0);
+                    p = row.Cells[5].Paragraphs.First().Append($"{salary:0.00}");
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.right;
+
+                    if (number % 15 == 0)
+                    {
+                        
+                        var temp = Path.Combine("Temp",
+                            $"Payroll [{DateTime.Now:MMM-yyyy}] Page-{(int) (number / 15)}.docx");
+                        try
+                        {
+                            File.Delete(temp);
+                        }
+                        catch (Exception e)
+                        {
+                            //
+                        }
+                        
+                        doc.SaveAs(temp);
+
+                        Print(temp);
+
+                        doc.Dispose();
+
+                        doc = DocX.Load(template);
+                        doc.ReplaceText("[MONTH]", month.ToString("MMMM yyyy"));
+                        hasPage = false;
+                    }
+                }
+                
+                if (hasPage)
+                {
+                    var temp = Path.Combine("Temp",
+                        $"Payroll [{DateTime.Now:MMM-yyyy}] Page-{(int) (number / 15)+1}.docx");
+                    try
+                    {
+                        File.Delete(temp);
+                    }
+                    catch (Exception e)
+                    {
+                        //
+                    }
+
+                    doc.SaveAs(temp);
+
+                    Print(temp);
+
+                    doc.Dispose();
+                    
+                }
+
+                IsPrinting = false;
+            });
+
+        }));
+        
+        private TimeSpan GetHours(Employee employee,DateTime month)
+        {
+            if (!employee.Job.Teaching)
+                return GetNonTeaching(employee,month);
+            
+            var timeSpan = new TimeSpan();
+            
+            var schedules = Schedule.Cache.Where(x => x.EmployeeId == employee.Id).ToList();
+            foreach (var schedule in schedules)
+            {
+                var schedItems = ScheduleItem.Cache.Where(x => x.ScheduleId == schedule.Id).ToList();
+                foreach (var item in schedItems)
+                {
+                    var start = DateTime.Parse(item.StartTime);
+                    var endTime = DateTime.Parse(item.EndTime);
+
+                    var records = DailyTimeRecord.Cache.Where(
+                        x => x.HasTimeOut && x.EmployeeId == employee.Id && x.TimeIn.Month == month.Month &&
+                             x.TimeIn.Year == month.Year
+                             && x.TimeIn.DayOfWeek == item.Day &&
+                             (x.TimeIn.Hour >= start.Hour && x.TimeIn.Hour < endTime.Hour
+                              || x.TimeOut?.Hour <= endTime.Hour && x.TimeOut?.Hour > start.Hour)).ToList();
+                    
+                    foreach (var dtr in records)
+                    {
+                        var dtrIn = DateTime.Parse(dtr.TimeIn.ToString("d") + $" {item.StartTime}");
+                        var dtrOut= DateTime.Parse(dtr.TimeIn.ToString("d") + $" {item.EndTime}");
+                        timeSpan = timeSpan.Add(GetTrimmedTime(dtrIn, dtrOut, dtr.TimeIn,
+                            dtr.TimeOut ?? DateTime.MaxValue));
+                    }
+                }
+            }
+            return timeSpan;
+        }
+
+        private TimeSpan GetTrimmedTime(DateTime sIn, DateTime sOut, DateTime rIn, DateTime rOut)
+        {
+            var timeIn = sIn < rIn ? rIn : sIn;
+            var timeOut = sOut > rOut ? rOut : sOut;
+            return timeOut - timeIn;
+        }
+
+        private TimeSpan GetNonTeaching(Employee employee,DateTime month)
+        {
+            var records = DailyTimeRecord.Cache.Where(x => x.EmployeeId == employee.Id && x.TimeIn.Month == month.Month
+                                             && x.TimeIn.Year == month.Year && x.HasTimeOut)?.ToList();
+            var time = new TimeSpan();
+            
+            foreach (var dtr in records)
+            {
+                if (dtr.TimeIn.Hour < 12)
+                {
+                    var timeInAm = DateTime.MinValue;
+                    DateTime.TryParse(Settings.Default.TimeInAM, out timeInAm);
+
+                    var timeIn = timeInAm < dtr.TimeIn ? dtr.TimeIn : timeInAm;
+
+                    var timeOutAm = DateTime.MinValue;
+                    DateTime.TryParse(Settings.Default.TimeOutAM, out timeOutAm);
+
+                    var timeOut = timeOutAm > dtr.TimeOut ? dtr.TimeOut : timeOutAm;
+
+                    time = time.Add((timeOut - timeIn) ?? TimeSpan.Zero);
+                }
+                else
+                {
+                    var timeInAm = DateTime.MinValue;
+                    DateTime.TryParse(Settings.Default.TimeInPM, out timeInAm);
+
+                    var timeIn = timeInAm < dtr.TimeIn ? dtr.TimeIn : timeInAm;
+
+                    var timeOutAm = DateTime.MinValue;
+                    DateTime.TryParse(Settings.Default.TimeOutPM, out timeOutAm);
+
+                    var timeOut = timeOutAm > dtr.TimeOut ? dtr.TimeOut : timeOutAm;
+
+                    time = time.Add((timeOut - timeIn) ?? TimeSpan.Zero);
+                }
+            }
+            
+            return time;
+        }
+
         private ListCollectionView _EmployeeSchedules;
         public ListCollectionView EmployeeSchedules
         {
@@ -619,8 +839,7 @@ namespace NORSU.BioPay.ViewModels
                 };
                 _EmployeeSchedules.CurrentChanged += (sender, args) =>
                 {
-                    if (_EmployeeSchedules.IsAddingNew) return;
-                    Schedule.SelectedItem = (Schedule) _EmployeeSchedules.CurrentItem;
+                    Schedule.SelectedItem = _EmployeeSchedules.CurrentItem as Schedule;
                 };
                 return _EmployeeSchedules;
             }

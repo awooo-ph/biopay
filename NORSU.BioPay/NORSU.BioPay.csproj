@@ -125,6 +125,8 @@
     <Compile Include="Converters\DtrGroupConverter.cs" />
     <Compile Include="Converters\EqualityToVisibility.cs" />
     <Compile Include="Converters\Inverter.cs" />
+    <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="Converters\IsScheduleConverter.cs" />
     <Compile Include="Converters\TimeSpanConverter.cs" />
     <Compile Include="Converters\WindowStateToPackIcon.cs" />
     <Compile Include="EnumBinding.cs" />

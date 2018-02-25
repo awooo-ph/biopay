@@ -140,8 +140,20 @@
           
           </DataGrid>
         </md:ColorZone>
-          
-        <!--Title bar-->
+            <md:ColorZone
+              Grid.Row="1"
+              VerticalAlignment="Bottom"
+              HorizontalAlignment="Left"
+              Margin="20"
+              Grid.Column="0">
+              <UniformGrid Rows="1">
+                <TextBox md:HintAssist.Hint="PAYROLL MONTH"
+                       Text="{Binding PayrollMonth,UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="PRINT PAYROLL"
+                      Command="{Binding PrintPayrollCommand}"/>
+              </UniformGrid>
+            </md:ColorZone>
+            <!--Title bar-->
         <md:ColorZone Mode="PrimaryDark" Foreground="White"
                       Grid.Row="0"
                       Grid.Column="0"
