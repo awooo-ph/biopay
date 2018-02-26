@@ -78,6 +78,43 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
+        private string _SearchKeyword;
+
+        public string SearchKeyword
+        {
+            get => _SearchKeyword;
+            set
+            {
+                if(value == _SearchKeyword)
+                    return;
+                _SearchKeyword = value;
+                OnPropertyChanged(nameof(SearchKeyword));
+                Employees.Refresh();
+            }
+        }
+
+        private ICommand _deleteSelectedCommand;
+
+        public ICommand DeleteSelectedCommand =>
+            _deleteSelectedCommand ?? (_deleteSelectedCommand = new DelegateCommand(
+                d =>
+                {
+                    var list = new List<Employee>();
+                    
+                    foreach (Employee employee in Employees)
+                    {
+                        if (employee.IsSelected)
+                        {
+                            list.Add(employee);
+                        }
+                    }
+                    
+                    foreach (var employee in list)
+                    {
+                        employee.Delete(false);
+                    }
+                },d=>HasSelected));
+        
         private DateTime _lastPunch;
         private async void ShowPunch()
         {
@@ -203,10 +240,18 @@ namespace NORSU.BioPay.ViewModels
                 _employees.CurrentChanged += (sender, args) =>
                 {
                     if (_employees.IsAddingNew) return;
-                    Employee.SelectedItem = (Employee) _employees.CurrentItem;
+                    Employee.SelectedItem = _employees.CurrentItem as Employee;
                 };
+                _employees.Filter = FilterEmployee;
                 return _employees;
             }
+        }
+
+        private bool FilterEmployee(object o)
+        {
+            if (!(o is Employee emp)) return false;
+            if (string.IsNullOrWhiteSpace(SearchKeyword)) return true;
+            return emp.Fullname.ToLower().Contains(SearchKeyword.ToLower());
         }
 
         private ListCollectionView _dtr;
@@ -635,6 +680,7 @@ namespace NORSU.BioPay.ViewModels
                 if (!DateTime.TryParse(PayrollMonth, out month))
                 {
                     MessageBox.Show("Please enter a valid month to generate payroll for.", "Invalid Month");
+                    IsPrinting = false;
                     return;
                 }
 
@@ -677,7 +723,7 @@ namespace NORSU.BioPay.ViewModels
                     p.LineSpacingAfter = 0;
                     p.Alignment = Alignment.right;
 
-                    var hours = GetHours(employee,month);
+                    var hours = GetHours(employee,month).Add(TimeSpan.FromHours(employee.BonusHours));
 
                     p = row.Cells[4].Paragraphs.First().Append($"{hours.TotalHours:0.00}");
                     p.LineSpacingAfter = 0;
@@ -688,7 +734,26 @@ namespace NORSU.BioPay.ViewModels
                     p.LineSpacingAfter = 0;
                     p.Alignment = Alignment.right;
 
-                    if (number % 15 == 0)
+                    var deduction = 0d;
+                    if (employee.Deduction?.EndsWith("%")??false)
+                    {
+                        double.TryParse(employee.Deduction.Replace("%", ""), out deduction);
+                        deduction = salary * deduction;
+                    }
+                    else
+                    {
+                        double.TryParse(employee.Deduction, out deduction);
+                    }
+                    
+                    p = row.Cells[6].Paragraphs.First().Append($"{employee.Deduction}");
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.right;
+
+                    p = row.Cells[7].Paragraphs.First().Append($"{salary - deduction:0.00}");
+                    p.LineSpacingAfter = 0;
+                    p.Alignment = Alignment.right;
+
+                    if(number % 15 == 0)
                     {
                         
                         var temp = Path.Combine("Temp",
@@ -772,6 +837,7 @@ namespace NORSU.BioPay.ViewModels
                     }
                 }
             }
+            
             return timeSpan;
         }
 
@@ -793,30 +859,34 @@ namespace NORSU.BioPay.ViewModels
                 if (dtr.TimeIn.Hour < 12)
                 {
                     var timeInAm = DateTime.MinValue;
-                    DateTime.TryParse(Settings.Default.TimeInAM, out timeInAm);
+                    DateTime.TryParse(dtr.TimeIn.ToString("d") + " " + Settings.Default.TimeInAM, out timeInAm);
 
                     var timeIn = timeInAm < dtr.TimeIn ? dtr.TimeIn : timeInAm;
 
                     var timeOutAm = DateTime.MinValue;
-                    DateTime.TryParse(Settings.Default.TimeOutAM, out timeOutAm);
+                    DateTime.TryParse(dtr.TimeIn.ToString("d") + " " + Settings.Default.TimeOutAM, out timeOutAm);
 
                     var timeOut = timeOutAm > dtr.TimeOut ? dtr.TimeOut : timeOutAm;
-
-                    time = time.Add((timeOut - timeIn) ?? TimeSpan.Zero);
+                    var span = (timeOut - timeIn) ?? TimeSpan.Zero;
+                    if (span.TotalSeconds < 0) span = TimeSpan.Zero;
+                    time = time.Add(span);
                 }
                 else
                 {
                     var timeInAm = DateTime.MinValue;
-                    DateTime.TryParse(Settings.Default.TimeInPM, out timeInAm);
+                    DateTime.TryParse(dtr.TimeIn.ToString("d") + " " + Settings.Default.TimeInPM, out timeInAm);
 
                     var timeIn = timeInAm < dtr.TimeIn ? dtr.TimeIn : timeInAm;
 
                     var timeOutAm = DateTime.MinValue;
-                    DateTime.TryParse(Settings.Default.TimeOutPM, out timeOutAm);
+                    DateTime.TryParse(dtr.TimeIn.ToString("d") + " " + Settings.Default.TimeOutPM, out timeOutAm);
 
                     var timeOut = timeOutAm > dtr.TimeOut ? dtr.TimeOut : timeOutAm;
-
-                    time = time.Add((timeOut - timeIn) ?? TimeSpan.Zero);
+                    
+                    var span = (timeOut - timeIn) ?? TimeSpan.Zero;
+                    if (span.TotalSeconds < 0)
+                        span = TimeSpan.Zero;
+                    time = time.Add(span);
                 }
             }
             
@@ -851,5 +921,66 @@ namespace NORSU.BioPay.ViewModels
             if (!(Employees.CurrentItem is Employee emp)) return false;
             return sched.EmployeeId == emp.Id;
         }
+
+        private bool? _SelectionState = false;
+
+        public bool? SelectionState
+        {
+            get => _SelectionState;
+            set
+            {
+                if (value == _SelectionState)
+                    return;
+                _SelectionState = value;
+                OnPropertyChanged(nameof(SelectionState));
+
+                var students = Employee.Cache.ToList();
+                foreach (var student in students)
+                {
+                    student.Select(_SelectionState ?? false);
+                }
+                OnPropertyChanged(nameof(HasSelected));
+            }
+        }
+
+        private bool _HasSelected;
+
+        public bool HasSelected
+        {
+            get
+            {
+                var students = Employee.Cache;
+                return students.Any(x => x.IsSelected);
+            }
+            set
+            {
+                _HasSelected = value;
+                OnPropertyChanged(nameof(HasSelected));
+            }
+        }
+
+        private ICommand _toggleDeveloperCommand;
+
+        public ICommand ToggleDeveloperCommand =>
+            _toggleDeveloperCommand ?? (_toggleDeveloperCommand = new DelegateCommand(
+                d =>
+                {
+                    ShowDev = !ShowDev;
+                }));
+        private bool _ShowDev;
+
+        public bool ShowDev
+        {
+            get => _ShowDev;
+            set
+            {
+                if(value == _ShowDev)
+                    return;
+                _ShowDev = value;
+                OnPropertyChanged(nameof(ShowDev));
+            }
+        }
+
+        
     }
 }

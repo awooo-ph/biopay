@@ -62,7 +62,7 @@
             <TextBlock Text="BIOMETRIC" TextAlignment="Center" FontSize="7pt" />
           </StackPanel>
         </ListBoxItem>
-        <ListBoxItem>
+        <ListBoxItem Visibility="{Binding Employees.CurrentItem.Job.Teaching,Converter={converters:BooleanToVisibility}}">
           <StackPanel>
             <md:PackIcon Kind="CalendarMultiple" Height="32" Width="32"
                          HorizontalAlignment="Center" />

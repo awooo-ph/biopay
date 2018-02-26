@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using NORSU.BioPay.Properties;
 using NORSU.BioPay.ViewModels;
 
 namespace NORSU.BioPay
@@ -25,6 +26,8 @@ namespace NORSU.BioPay
 
         protected override void OnExit(ExitEventArgs e)
         {
+            Settings.Default.Save();
+            
             Scanner.Stop();
             base.OnExit(e);
         }

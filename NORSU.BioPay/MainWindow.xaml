@@ -72,13 +72,28 @@
         <!--Employee list-->
         <md:ColorZone Mode="Light" Grid.Row="1" VerticalAlignment="Stretch">
           <DataGrid ItemsSource="{Binding Employees}"
+                    SelectionMode="Single"
                     IsSynchronizedWithCurrentItem="True"
                     AutoGenerateColumns="False">
             
             <DataGrid.Columns>
+              <DataGridCheckBoxColumn
+                EditingElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnEditingStyle}"
+                Binding="{Binding IsSelected,UpdateSourceTrigger=PropertyChanged}"
+                CanUserResize="False"
+                ElementStyle="{StaticResource MaterialDesignDataGridCheckBoxColumnStyle}">
+                <DataGridCheckBoxColumn.Header>
 
+                  <CheckBox VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Focusable="False"
+                            Margin="2 0 0 0"
+                            IsChecked="{Binding Source={x:Static vm:MainViewModel.Instance},Path=SelectionState}"
+                            Padding="0" />
+                </DataGridCheckBoxColumn.Header>
+              </DataGridCheckBoxColumn>
 
-              <DataGridTextColumn Header="Employee ID"
+                  <DataGridTextColumn Header="Employee ID"
                                   EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
                                   Binding="{Binding EmployeeId,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
               
@@ -133,26 +148,49 @@
                 </DataGridTemplateColumn.CellEditingTemplate>
               </DataGridTemplateColumn>
 
-            
-              
-            </DataGrid.Columns>
+              <DataGridTextColumn Header="Bonus Hours"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding BonusHours,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+              <DataGridTextColumn Header="Deduction"
+                                  EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"
+                                  Binding="{Binding Deduction,ValidatesOnDataErrors=True,UpdateSourceTrigger=PropertyChanged}" />
+
+                </DataGrid.Columns>
 
           
           </DataGrid>
         </md:ColorZone>
-            <md:ColorZone
-              Grid.Row="1"
-              VerticalAlignment="Bottom"
-              HorizontalAlignment="Left"
-              Margin="20"
-              Grid.Column="0">
+          
+         
+          
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Left"
+                        Margin="20">
+              
+              <md:Card Padding="7"
+                     Margin="10 0"
+                    UniformCornerRadius="7">
               <UniformGrid Rows="1">
-                <TextBox md:HintAssist.Hint="PAYROLL MONTH"
+                  <TextBox md:HintAssist.Hint="MONTH"
+                         Margin="0,0,4 0"
                        Text="{Binding PayrollMonth,UpdateSourceTrigger=PropertyChanged}"/>
                 <Button Content="PRINT PAYROLL"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Margin="4 0 0 0"
                       Command="{Binding PrintPayrollCommand}"/>
               </UniformGrid>
-            </md:ColorZone>
+            </md:Card>
+              <Button Content="DELETE SELECTED" Command="{Binding DeleteSelectedCommand}"
+                      Margin="10 0"/>
+            </StackPanel>
+
+            <views:DevTeam Grid.Row="1" Grid.Column="0"
+                           Visibility="{Binding ShowDev,Converter={converters:BooleanToVisibility}}"
+                           Grid.ColumnSpan="2"/>
+
             <!--Title bar-->
         <md:ColorZone Mode="PrimaryDark" Foreground="White"
                       Grid.Row="0"
@@ -183,7 +221,27 @@
                 </Path.RenderTransform>
               </Path>
               <TextBlock Text="Pay" FontSize="17pt" VerticalAlignment="Bottom" FontFamily="Segoe Script" />
-            </StackPanel>
+
+                  <md:ColorZone Padding="7 4"
+                                Mode="Light"
+                           Grid.Column="0"
+                           Grid.Row="0"
+                           VerticalAlignment="Center"
+                           Margin="40 0"
+                           CornerRadius="7">
+                    <UniformGrid Rows="1">
+                      <TextBox Margin="0,0,4 0"
+                               Text="{Binding SearchKeyword,UpdateSourceTrigger=PropertyChanged}">
+                        <md:HintAssist.Hint>
+                          <StackPanel Orientation="Horizontal">
+                            <md:PackIcon Kind="Magnify" VerticalAlignment="Center" />
+                            <TextBlock Text=" SEARCH EMPLOYEES" VerticalAlignment="Center" />
+                          </StackPanel>
+                        </md:HintAssist.Hint>
+                      </TextBox>
+                    </UniformGrid>
+                  </md:ColorZone>
+                </StackPanel>
 
 
             <Viewbox Grid.Column="1" Margin="20 0"
@@ -210,7 +268,10 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Top"
                         Grid.Row="0">
-              <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon Settings}"
+              <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon Information}"
+                      Command="{Binding ToggleDeveloperCommand}"
+                      ToolTip="About Us" />
+                  <Button Style="{StaticResource WindowCommandButton}" Content="{md:PackIcon Settings}"
                       Command="{Binding ToggleSettingsCommand}"
                       ToolTip="Settings"/>
               <Rectangle Width="1" Fill="{StaticResource MaterialDesignDivider}"/>
@@ -228,7 +289,10 @@
           </Grid>
         </md:ColorZone>
 
-        <views:EmployeeInfo Grid.Row="1" Grid.Column="1"/>
+        <views:EmployeeInfo Grid.Row="1" Grid.Column="1"
+                            Visibility="{Binding ShowDev,Converter={converters:BooleanToVisibility Collapsed,Visible}}" />
+          
+          
       </Grid>
       </md:DrawerHost>
       </md:DialogHost>
