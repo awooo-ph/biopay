@@ -981,6 +981,11 @@ namespace NORSU.BioPay.ViewModels
             }
         }
 
-        
+        private ICommand _runExternalCommand;
+
+        public ICommand RunExternalCommand => _runExternalCommand ?? (_runExternalCommand = new DelegateCommand<string>(d =>
+        {
+            Process.Start(d);
+        }));
     }
 }

@@ -22,129 +22,330 @@
         <RowDefinition/>
       <RowDefinition />
     </Grid.RowDefinitions>
-    <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"
-             Grid.Column="0" Grid.Row="0"
-             Grid.ColumnSpan="2">
-      <md:Card Margin="20" UniformCornerRadius="7">
-        <StackPanel Margin="20">
-        <Border Width="222"
-                Height="222">
-          <Border.OpacityMask>
-            <VisualBrush>
-              <VisualBrush.Visual>
-                <Ellipse Height="7" Width="7" Fill="Red"/>
-              </VisualBrush.Visual>
-            </VisualBrush>
-          </Border.OpacityMask>
-          
-        <Image Source="pack://application:,,,/dev/arlyn.jpg"
-               Stretch="UniformToFill"
-               RenderOptions.BitmapScalingMode="HighQuality"/>
-        </Border>
-        <TextBlock Text="ARLYN TUMACMOL" FontSize="15pt" TextAlignment="Center"/>
-      </StackPanel>
-    </md:Card>
-</Viewbox>
-
-      <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"
-               Grid.Column="2" Grid.Row="0"
-               Grid.ColumnSpan="2">
-      <md:Card Margin="20" UniformCornerRadius="7">
-        <StackPanel Margin="20">
-          <Border Width="222"
-                  Height="222">
-            <Border.OpacityMask>
-              <VisualBrush>
-                <VisualBrush.Visual>
-                  <Ellipse Height="7" Width="7" Fill="Red" />
-                </VisualBrush.Visual>
-              </VisualBrush>
-            </Border.OpacityMask>
-
-            <Image Source="pack://application:,,,/dev/michelle.jpg"
-                   Stretch="UniformToFill"
-                   RenderOptions.BitmapScalingMode="HighQuality" />
-          </Border>
-          <TextBlock Text="MICHELLE DAYUDAY" FontSize="15pt" TextAlignment="Center" />
-        </StackPanel>
-      </md:Card>
-        </Viewbox>
+    <md:Flipper Margin="10"
+                Cursor="Hand"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.Column="0" Grid.Row="0"
+                Grid.ColumnSpan="2">
+      <md:Flipper.InputBindings>
+        <MouseBinding MouseAction="LeftClick" Command="{Binding Source={x:Static md:Flipper.FlipCommand}}" />
+      </md:Flipper.InputBindings>
+      <md:Flipper.FrontContent>
+        <md:ColorZone  CornerRadius="777"
+                 
+                  md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
       
-      <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"
-             Grid.Column="4" Grid.Row="0"
-               Grid.ColumnSpan="2">
+          <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
 
-        <md:Card Margin="20" UniformCornerRadius="7">
-        <StackPanel Margin="20">
-          <Border Width="222"
-                  Height="222">
-            <Border.OpacityMask>
-              <VisualBrush>
-                <VisualBrush.Visual>
-                  <Ellipse Height="7" Width="7" Fill="Red" />
-                </VisualBrush.Visual>
-              </VisualBrush>
-            </Border.OpacityMask>
+            <Border Height="555" Width="555">
+              <Border.OpacityMask>
+                <VisualBrush>
+                  <VisualBrush.Visual>
+                    <Ellipse Height="7" Width="7" Fill="Red" />
+                  </VisualBrush.Visual>
+                </VisualBrush>
+              </Border.OpacityMask>
 
-            <Image Source="pack://application:,,,/dev/rose.jpg"
-                   Stretch="UniformToFill"
-                   RenderOptions.BitmapScalingMode="HighQuality" />
-          </Border>
-          <TextBlock Text="ROSE BELBESTRE" FontSize="15pt" TextAlignment="Center" />
-        </StackPanel>
-      </md:Card>
-      </Viewbox>
+              <Image Source="pack://application:,,,/dev/arlyn.jpg"
+                     Stretch="UniformToFill"
+                     RenderOptions.BitmapScalingMode="HighQuality" />
+            </Border>
 
-      <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"
-               Grid.Column="1"
-               Grid.ColumnSpan="2"
-               Grid.Row="1">
+          </Viewbox>
+      
+      
+    </md:ColorZone>
 
-      <md:Card Margin="20" UniformCornerRadius="7">
-        <StackPanel Margin="20">
-          <Border Width="222"
-                  Height="222">
-            <Border.OpacityMask>
-              <VisualBrush>
-                <VisualBrush.Visual>
-                  <Ellipse Height="7" Width="7" Fill="Red" />
-                </VisualBrush.Visual>
-              </VisualBrush>
-            </Border.OpacityMask>
+      </md:Flipper.FrontContent>
+      <md:Flipper.BackContent>
+        <md:ColorZone CornerRadius="777"
 
-            <Image Source="pack://application:,,,/dev/jerome.jpg"
-                   Stretch="UniformToFill"
-                   RenderOptions.BitmapScalingMode="HighQuality" />
-          </Border>
-          <TextBlock Text="JEROME ARCALA" FontSize="15pt" TextAlignment="Center" />
-        </StackPanel>
-      </md:Card>
-      </Viewbox>
+                      md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+        <Viewbox>
+            <Grid Height="333" Width="333">
+            <StackPanel HorizontalAlignment="Center" Margin="10"
+                        VerticalAlignment="Center">
+              <TextBlock Text="ARLYN R. TUMACMOL" FontSize="17pt" FontWeight="Bold" TextAlignment="Center"/>
+              <TextBlock Text="Anunang, Guba, Vallehermoso, Negros Oriental" FontSize="14pt" TextAlignment="Center" TextWrapping="Wrap"/>
+              <TextBlock Text="June 19, 1996" FontSize="14pt" TextAlignment="Center"
+                         Margin="0 4"
+                         TextWrapping="Wrap" />
+                <Button HorizontalAlignment="Center" Command="{Binding RunExternalCommand}"
+                        CommandParameter="https://facebook.com/myarlyn.tumacmol">
+                  <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="FacebookBox"/>
+                    <TextBlock Text=" myarlyn.tumacmol"/>
+                  </StackPanel>
+                              
+                </Button>
+              </StackPanel>
+          </Grid>
+        </Viewbox>
+        </md:ColorZone>
+      </md:Flipper.BackContent>
+    </md:Flipper>
 
-      <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center"
-               Grid.ColumnSpan="2"
-               Grid.Column="3" Grid.Row="1">
 
-      <md:Card Margin="20" UniformCornerRadius="7">
-        <StackPanel Margin="20">
-          <Border Width="222"
-                  Height="222">
-            <Border.OpacityMask>
-              <VisualBrush>
-                <VisualBrush.Visual>
-                  <Ellipse Height="7" Width="7" Fill="Red" />
-                </VisualBrush.Visual>
-              </VisualBrush>
-            </Border.OpacityMask>
+    <md:Flipper Margin="10"
+                Cursor="Hand"
+                Grid.Column="2" Grid.Row="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.ColumnSpan="2">
+      <md:Flipper.InputBindings>
+        <MouseBinding MouseAction="LeftClick" Command="{Binding Source={x:Static md:Flipper.FlipCommand}}" />
+      </md:Flipper.InputBindings>
+      <md:Flipper.FrontContent>
+        <md:ColorZone  CornerRadius="777"
+                 
+                  md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
 
-            <Image Source="pack://application:,,,/dev/vincent.jpg"
-                   Stretch="UniformToFill"
-                   RenderOptions.BitmapScalingMode="HighQuality" />
-          </Border>
-          <TextBlock Text="VINCENT ALBIA" FontSize="15pt" TextAlignment="Center" />
-        </StackPanel>
-      </md:Card>
-    </Viewbox>
+          <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Border Height="555" Width="555">
+              <Border.OpacityMask>
+                <VisualBrush>
+                  <VisualBrush.Visual>
+                    <Ellipse Height="7" Width="7" Fill="Red" />
+                  </VisualBrush.Visual>
+                </VisualBrush>
+              </Border.OpacityMask>
+
+              <Image Source="pack://application:,,,/dev/michelle.jpg"
+                     Stretch="UniformToFill"
+                     RenderOptions.BitmapScalingMode="HighQuality" />
+            </Border>
+
+          </Viewbox>
+
+
+        </md:ColorZone>
+
+      </md:Flipper.FrontContent>
+      <md:Flipper.BackContent>
+        <md:ColorZone CornerRadius="777"
+
+                      md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+          <Viewbox>
+            <Grid Height="333" Width="333">
+              <StackPanel HorizontalAlignment="Center" Margin="10"
+                        VerticalAlignment="Center">
+                <TextBlock Text="MICHELLE V. DAYUDAY" FontSize="17pt" FontWeight="Bold" TextAlignment="Center"/>
+                <TextBlock Text="Matuog, Tayasan, Negros Oriental" FontSize="14pt" TextAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="MAY 26, 1997" FontSize="14pt" TextAlignment="Center"
+                         Margin="0 4"
+                         TextWrapping="Wrap" />
+                <Button HorizontalAlignment="Center"
+                        Command="{Binding RunExternalCommand}"
+                        CommandParameter="https://facebook.com/mench.dayuday">
+                  <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="FacebookBox"/>
+                    <TextBlock Text=" mench.dayuday"/>
+                  </StackPanel>
+
+                </Button>
+              </StackPanel>
+            </Grid>
+          </Viewbox>
+        </md:ColorZone>
+      </md:Flipper.BackContent>
+    </md:Flipper>
+
+    <md:Flipper Margin="10"
+                Cursor="Hand"
+                Grid.Column="4" Grid.Row="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.ColumnSpan="2">
+      <md:Flipper.InputBindings>
+        <MouseBinding MouseAction="LeftClick" Command="{Binding Source={x:Static md:Flipper.FlipCommand}}" />
+      </md:Flipper.InputBindings>
+      <md:Flipper.FrontContent>
+        <md:ColorZone  CornerRadius="777"
+                 
+                  md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+
+          <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Border Height="555" Width="555">
+              <Border.OpacityMask>
+                <VisualBrush>
+                  <VisualBrush.Visual>
+                    <Ellipse Height="7" Width="7" Fill="Red" />
+                  </VisualBrush.Visual>
+                </VisualBrush>
+              </Border.OpacityMask>
+
+              <Image Source="pack://application:,,,/dev/rose.jpg"
+                     Stretch="UniformToFill"
+                     RenderOptions.BitmapScalingMode="HighQuality" />
+            </Border>
+
+          </Viewbox>
+
+
+        </md:ColorZone>
+
+      </md:Flipper.FrontContent>
+      <md:Flipper.BackContent>
+        <md:ColorZone CornerRadius="777"
+
+                      md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+          <Viewbox>
+            <Grid Height="333" Width="333">
+              <StackPanel HorizontalAlignment="Center" Margin="10"
+                        VerticalAlignment="Center">
+                <TextBlock Text="ROSELYN P. BELBESTRE" FontSize="17pt" FontWeight="Bold" TextAlignment="Center"/>
+                <TextBlock Text="Bagawines, Vallehermoso, Negros Oriental" FontSize="14pt" TextAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="August 8, 1994" FontSize="14pt" TextAlignment="Center"
+                         Margin="0 4"
+                         TextWrapping="Wrap" />
+                <Button HorizontalAlignment="Center"
+                        Command="{Binding RunExternalCommand}"
+                        CommandParameter="https://facebook.com/roselyn.belbestre.7">
+                  <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="FacebookBox"/>
+                    <TextBlock Text=" roselyn.belbestre.7"/>
+                  </StackPanel>
+
+                </Button>
+              </StackPanel>
+            </Grid>
+          </Viewbox>
+        </md:ColorZone>
+      </md:Flipper.BackContent>
+    </md:Flipper>
+
+    <md:Flipper Margin="10"
+                Cursor="Hand"
+                Grid.Column="1" Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.ColumnSpan="2">
+      <md:Flipper.InputBindings>
+        <MouseBinding MouseAction="LeftClick" Command="{Binding Source={x:Static md:Flipper.FlipCommand}}" />
+      </md:Flipper.InputBindings>
+      <md:Flipper.FrontContent>
+        <md:ColorZone  CornerRadius="777"
+                 
+                  md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+
+          <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Border Height="555" Width="555">
+              <Border.OpacityMask>
+                <VisualBrush>
+                  <VisualBrush.Visual>
+                    <Ellipse Height="7" Width="7" Fill="Red" />
+                  </VisualBrush.Visual>
+                </VisualBrush>
+              </Border.OpacityMask>
+
+              <Image Source="pack://application:,,,/dev/jerome.jpg"
+                     Stretch="UniformToFill"
+                     RenderOptions.BitmapScalingMode="HighQuality" />
+            </Border>
+
+          </Viewbox>
+
+
+        </md:ColorZone>
+
+      </md:Flipper.FrontContent>
+      <md:Flipper.BackContent>
+        <md:ColorZone CornerRadius="777"
+
+                      md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+          <Viewbox>
+            <Grid Height="333" Width="333">
+              <StackPanel HorizontalAlignment="Center" Margin="10"
+                        VerticalAlignment="Center">
+                <TextBlock Text="JEROME A. GENON" FontSize="17pt" FontWeight="Bold" TextAlignment="Center"/>
+                <TextBlock Text="Puan, Vallehermoso, Negros Oriental" FontSize="14pt" TextAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="December 8, 1995" FontSize="14pt" TextAlignment="Center"
+                         Margin="0 4"
+                         TextWrapping="Wrap" />
+                <Button HorizontalAlignment="Center"
+                        Command="{Binding RunExternalCommand}"
+                        CommandParameter="https://facebook.com/jerome.jyleen">
+                  <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="FacebookBox"/>
+                    <TextBlock Text=" jerome.jyleen"/>
+                  </StackPanel>
+
+                </Button>
+              </StackPanel>
+            </Grid>
+          </Viewbox>
+        </md:ColorZone>
+      </md:Flipper.BackContent>
+    </md:Flipper>
+
+    <md:Flipper Margin="10"
+                Cursor="Hand"
+                Grid.Column="3" Grid.Row="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Grid.ColumnSpan="2">
+      <md:Flipper.InputBindings>
+        <MouseBinding MouseAction="LeftClick" Command="{Binding Source={x:Static md:Flipper.FlipCommand}}" />
+      </md:Flipper.InputBindings>
+      <md:Flipper.FrontContent>
+        <md:ColorZone  CornerRadius="777"
+                 
+                  md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+
+          <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Border Height="555" Width="555">
+              <Border.OpacityMask>
+                <VisualBrush>
+                  <VisualBrush.Visual>
+                    <Ellipse Height="7" Width="7" Fill="Red" />
+                  </VisualBrush.Visual>
+                </VisualBrush>
+              </Border.OpacityMask>
+
+              <Image Source="pack://application:,,,/dev/vincent.jpg"
+                     Stretch="UniformToFill"
+                     RenderOptions.BitmapScalingMode="HighQuality" />
+            </Border>
+
+          </Viewbox>
+
+
+        </md:ColorZone>
+
+      </md:Flipper.FrontContent>
+      <md:Flipper.BackContent>
+        <md:ColorZone CornerRadius="777"
+
+                      md:ShadowAssist.ShadowDepth="Depth4" md:ShadowAssist.ShadowEdges="All">
+          <Viewbox>
+            <Grid Height="333" Width="333">
+              <StackPanel HorizontalAlignment="Center" Margin="10"
+                        VerticalAlignment="Center">
+                <TextBlock Text="VICENTE N. ALBIA" FontSize="17pt" FontWeight="Bold" TextAlignment="Center"/>
+                <TextBlock Text="Canlaon, Negros Oriental" FontSize="14pt" TextAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="April 1, 1991" FontSize="14pt" TextAlignment="Center"
+                         Margin="0 4"
+                         TextWrapping="Wrap" />
+                <Button HorizontalAlignment="Center"
+                        Command="{Binding RunExternalCommand}"
+                        CommandParameter="https://facebook.com/vincent.albia.31">
+                  <StackPanel Orientation="Horizontal">
+                    <md:PackIcon Kind="FacebookBox"/>
+                    <TextBlock Text=" vincent.albia.31"/>
+                  </StackPanel>
+
+                </Button>
+              </StackPanel>
+            </Grid>
+          </Viewbox>
+        </md:ColorZone>
+      </md:Flipper.BackContent>
+    </md:Flipper>
 
   </Grid>
   
