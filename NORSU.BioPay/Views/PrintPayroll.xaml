@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="NORSU.BioPay.Views.PrintPayroll"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NORSU.BioPay.Views"
+             mc:Ignorable="d"
+             Background="#77FFFFFF"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:biopay="clr-namespace:NORSU.BioPay"
+             xmlns:vm ="clr-namespace:NORSU.BioPay.ViewModels"
+             d:DesignHeight="300" d:DesignWidth="300">
+  <md:Card HorizontalAlignment="Center" VerticalAlignment="Center"
+           UniformCornerRadius="7">
+
+    <StackPanel>
+      <StackPanel Orientation="Horizontal"
+                  Margin="10">
+        <md:PackIcon Kind="Printer"
+                     Height="24"
+                     Width="24"
+                     VerticalAlignment="Center"
+                     Margin="10 10 0 10"
+                     />
+        <TextBlock Text="PRINT PAYROLL" Style="{StaticResource MaterialDesignHeadlineTextBlock}"
+                   VerticalAlignment="Center"
+                   Margin="10"/>
+      </StackPanel>
+      <UniformGrid Margin="7" Rows="1">
+        <Button Content="THIS MONTH"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Command="{Binding PrintThisMonthCommand}"
+                Margin="7"/>
+        <Button Content="LAST MONTH"
+                Style="{StaticResource MaterialDesignFlatButton}"
+                Command="{Binding PrintLastMonthCommand}"
+                Margin="7"/>
+      </UniformGrid>
+      <UniformGrid Rows="1" Margin="17 7 17 17">
+        <ComboBox ItemsSource="{Binding Source={biopay:EnumBinding EnumType={x:Type vm:Months}}}"
+                  Margin="7"
+                  SelectedItem="{Binding PrintMonth}"/>
+        <TextBox Text="{Binding PrintYear}"
+                 md:HintAssist.Hint="YEAR"
+                 TextAlignment="Center"
+                 Margin="7"/>
+      </UniformGrid>
+      <Button Content="PRINT"
+              HorizontalAlignment="Right"
+              Margin="20"
+              Command="{Binding PrintPayrollCommand}"/>
+    </StackPanel>
+    
+  </md:Card>
+</UserControl>

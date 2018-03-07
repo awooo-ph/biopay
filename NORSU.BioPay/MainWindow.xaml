@@ -170,27 +170,22 @@
                         HorizontalAlignment="Left"
                         Margin="20">
               
-              <md:Card Padding="7"
-                     Margin="10 0"
-                    UniformCornerRadius="7">
-              <UniformGrid Rows="1">
-                  <TextBox md:HintAssist.Hint="MONTH"
-                         Margin="0,0,4 0"
-                       Text="{Binding PayrollMonth,UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Content="PRINT PAYROLL"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        Margin="4 0 0 0"
-                      Command="{Binding PrintPayrollCommand}"/>
-              </UniformGrid>
-            </md:Card>
+            
               <Button Content="DELETE SELECTED" Command="{Binding DeleteSelectedCommand}"
                       Margin="10 0"/>
+              <Button Content="PRINT PAYROLL"
+                      Margin="10 0"
+                      Command="{Binding ShowPrintPayrollCommand}" />
             </StackPanel>
 
             <views:DevTeam Grid.Row="1" Grid.Column="0"
                            Visibility="{Binding ShowDev,Converter={converters:BooleanToVisibility}}"
                            Grid.ColumnSpan="2"/>
 
+          <views:PrintPayroll Grid.Row="1" Grid.Column="0"
+                         Visibility="{Binding ShowPrintDialog,Converter={converters:BooleanToVisibility}}"
+                         Grid.ColumnSpan="2" />
+          
             <!--Title bar-->
         <md:ColorZone Mode="PrimaryDark" Foreground="White"
                       Grid.Row="0"

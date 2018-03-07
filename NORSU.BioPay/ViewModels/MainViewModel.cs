@@ -127,6 +127,8 @@ namespace NORSU.BioPay.ViewModels
             if(ScreenIndex!=AdminIndex)
                 ScreenIndex = ClockIndex;
         }
+        
+        
 
         private static MainViewModel _instance;
         public static MainViewModel Instance => _instance ?? (_instance = new MainViewModel());
@@ -152,8 +154,6 @@ namespace NORSU.BioPay.ViewModels
             get => _Punch;
             set
             {
-                if(value == _Punch)
-                    return;
                 _Punch = value;
                 OnPropertyChanged(nameof(Punch));
             }
@@ -623,7 +623,6 @@ namespace NORSU.BioPay.ViewModels
                             var p3 = r.Cells[7].Paragraphs.First().Append($"{total.Hours:00}:{total.Minutes:00}:{total.Seconds:00}");
                             p3.LineSpacingAfter = 0;
                             p3.Alignment = Alignment.center;
-                            
                         }
 
                         var totalTime = TimeSpan.FromSeconds(DailyTimeRecord.Cache.Where(x=>x.EmployeeId==employee.Id)
@@ -652,38 +651,71 @@ namespace NORSU.BioPay.ViewModels
                     IsPrinting = false;
                 });
             }));
+        
+        private ICommand _showPrintPayrollCommand;
 
-        private string _PayrollMonth;
-
-        public string PayrollMonth
+        public ICommand ShowPrintPayrollCommand => _showPrintPayrollCommand ?? (_showPrintPayrollCommand = new DelegateCommand(d =>
         {
-            get => _PayrollMonth;
+            ShowPrintDialog = true;
+        },d=>!IsPrinting));
+
+        private ICommand _printThisMonthCommand;
+        public ICommand PrintThisMonthCommand => _printThisMonthCommand ?? (_printThisMonthCommand = new DelegateCommand(d =>
+        {
+            PrintMonth = (Months) DateTime.Now.Month;
+            PrintYear = DateTime.Now.Year;
+        }));
+
+        private ICommand _printLastMonthCommand;
+        public ICommand PrintLastMonthCommand => _printLastMonthCommand ?? (_printLastMonthCommand = new DelegateCommand(d =>
+        {
+            PrintMonth = (Months) DateTime.Now.AddMonths(-1).Month;
+            PrintYear = DateTime.Now.AddMonths(-1).Year;
+        }));
+
+        private Months _PrintMonth = (Months) DateTime.Now.Month;
+
+        public Months PrintMonth
+        {
+            get => _PrintMonth;
             set
             {
-                if(value == _PayrollMonth)
-                    return;
-                _PayrollMonth = value;
-                OnPropertyChanged(nameof(PayrollMonth));
+                if (value == _PrintMonth) return;
+                _PrintMonth = value;
+                OnPropertyChanged(nameof(PrintMonth));
             }
         }
-        
+
+        private int _PrintYear = DateTime.Now.Year;
+
+        public int PrintYear
+        {
+            get => _PrintYear;
+            set
+            {
+                if (value == _PrintYear) return;
+                _PrintYear = value;
+                OnPropertyChanged(nameof(PrintYear));
+            }
+        }
+
         private ICommand _printPayrollCommand;
 
         public ICommand PrintPayrollCommand => _printPayrollCommand ?? (_printPayrollCommand = new DelegateCommand(d =>
+        {
+            var date = DateTime.Parse($"{PrintMonth} {PrintYear}");
+            PrintPayroll(date);
+            ShowPrintDialog = false;
+        }));
+        
+        private void PrintPayroll(DateTime month)
         {
             if (IsPrinting)
                 return;
             IsPrinting = true;
             Task.Factory.StartNew(() =>
             {
-                var month = DateTime.Now;
-                if (!DateTime.TryParse(PayrollMonth, out month))
-                {
-                    MessageBox.Show("Please enter a valid month to generate payroll for.", "Invalid Month");
-                    IsPrinting = false;
-                    return;
-                }
-
+                
                 if (!Directory.Exists("Temp"))
                     Directory.CreateDirectory("Temp");
 
@@ -704,7 +736,7 @@ namespace NORSU.BioPay.ViewModels
                     number++;
 
                     var row = tbl.Rows[number];
-                    
+
                     var p = row.Cells[0].Paragraphs.First()
                         .Append(number.ToString());
                     p.LineSpacingAfter = 0;
@@ -723,7 +755,7 @@ namespace NORSU.BioPay.ViewModels
                     p.LineSpacingAfter = 0;
                     p.Alignment = Alignment.right;
 
-                    var hours = GetHours(employee,month).Add(TimeSpan.FromHours(employee.BonusHours));
+                    var hours = GetHours(employee, month).Add(TimeSpan.FromHours(employee.BonusHours));
 
                     p = row.Cells[4].Paragraphs.First().Append($"{hours.TotalHours:0.00}");
                     p.LineSpacingAfter = 0;
@@ -735,7 +767,7 @@ namespace NORSU.BioPay.ViewModels
                     p.Alignment = Alignment.right;
 
                     var deduction = 0d;
-                    if (employee.Deduction?.EndsWith("%")??false)
+                    if (employee.Deduction?.EndsWith("%") ?? false)
                     {
                         double.TryParse(employee.Deduction.Replace("%", ""), out deduction);
                         deduction = salary * deduction;
@@ -744,7 +776,7 @@ namespace NORSU.BioPay.ViewModels
                     {
                         double.TryParse(employee.Deduction, out deduction);
                     }
-                    
+
                     p = row.Cells[6].Paragraphs.First().Append($"{employee.Deduction}");
                     p.LineSpacingAfter = 0;
                     p.Alignment = Alignment.right;
@@ -753,11 +785,11 @@ namespace NORSU.BioPay.ViewModels
                     p.LineSpacingAfter = 0;
                     p.Alignment = Alignment.right;
 
-                    if(number % 15 == 0)
+                    if (number % 15 == 0)
                     {
-                        
+
                         var temp = Path.Combine("Temp",
-                            $"Payroll [{DateTime.Now:MMM-yyyy}] Page-{(int) (number / 15)}.docx");
+                            $"Payroll [{DateTime.Now:MMM-yyyy}] Page-{(int)(number / 15)}.docx");
                         try
                         {
                             File.Delete(temp);
@@ -766,7 +798,7 @@ namespace NORSU.BioPay.ViewModels
                         {
                             //
                         }
-                        
+
                         doc.SaveAs(temp);
 
                         Print(temp);
@@ -778,11 +810,11 @@ namespace NORSU.BioPay.ViewModels
                         hasPage = false;
                     }
                 }
-                
+
                 if (hasPage)
                 {
                     var temp = Path.Combine("Temp",
-                        $"Payroll [{DateTime.Now:MMM-yyyy}] Page-{(int) (number / 15)+1}.docx");
+                        $"Payroll [{DateTime.Now:MMM-yyyy}] Page-{(int)(number / 15) + 1}.docx");
                     try
                     {
                         File.Delete(temp);
@@ -797,13 +829,12 @@ namespace NORSU.BioPay.ViewModels
                     Print(temp);
 
                     doc.Dispose();
-                    
+
                 }
 
                 IsPrinting = false;
             });
-
-        }));
+        }
         
         private TimeSpan GetHours(Employee employee,DateTime month)
         {
@@ -987,5 +1018,20 @@ namespace NORSU.BioPay.ViewModels
         {
             Process.Start(d);
         }));
+
+        private bool _ShowPrintDialog;
+
+        public bool ShowPrintDialog
+        {
+            get => _ShowPrintDialog;
+            set
+            {
+                if (value == _ShowPrintDialog) return;
+                _ShowPrintDialog = value;
+                OnPropertyChanged(nameof(ShowPrintDialog));
+            }
+        }
+
+        
     }
 }
