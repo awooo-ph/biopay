@@ -9,11 +9,11 @@
              xmlns:converters="clr-namespace:NORSU.BioPay.Converters"
              xmlns:models="http://norsu-g.biopay/models"
              d:DesignHeight="300" d:DesignWidth="300">
-  <UserControl.Resources>
+  <!--<UserControl.Resources>
     <ResourceDictionary
       Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
-  </UserControl.Resources>
-  <md:ColorZone Mode="Dark" VerticalAlignment="Stretch">
+  </UserControl.Resources>-->
+  <md:ColorZone Mode="Light" VerticalAlignment="Stretch">
 
 
     <Grid Grid.Row="1" VerticalAlignment="Top">
@@ -82,14 +82,17 @@
                          FontSize="15pt" />
             </md:ColorZone>
 
-            <md:ColorZone Mode="Light" Margin="0 0 .25 0">
+            <md:ColorZone Mode="Light" Margin="0 0 .25 0" BorderBrush="{StaticResource MaterialDesignDivider}"
+                          BorderThickness=".5">
               <TextBlock Text="{Binding TimeIn,StringFormat={}hh:mm}"
                          TextAlignment="Center"
                          Grid.Column="2"
                          Grid.Row="1"
                          FontSize="15pt" />
             </md:ColorZone>
-            <md:ColorZone Mode="Light" Margin=".25 0 0 0">
+            <md:ColorZone Mode="Light" Margin=".25 0 0 0"
+                          BorderBrush="{StaticResource MaterialDesignDivider}"
+                          BorderThickness=".5">
             <TextBlock Text="{Binding TimeOut,StringFormat={}hh:mm}"
                          TextAlignment="Center"
                          Grid.Column="3"
@@ -106,7 +109,8 @@
                      FontWeight="Bold" />
             </md:ColorZone>
           <UniformGrid Columns="2" DataContext="{Binding PunchPM}">
-            <md:ColorZone Mode="PrimaryLight" Margin="0 0 .25 0">
+            <md:ColorZone Mode="PrimaryLight" Margin="0 0 .25 0"
+                          >
               <TextBlock Text="IN"
                          TextAlignment="Center"
                          Grid.Column="0"
@@ -121,14 +125,18 @@
                          FontSize="15pt" />
             </md:ColorZone>
 
-            <md:ColorZone Mode="Light" Margin="0 0 .25 0">
+            <md:ColorZone Mode="Light" Margin="0 0 .25 0"
+                          BorderBrush="{StaticResource MaterialDesignDivider}"
+                          BorderThickness=".5">
               <TextBlock Text="{Binding TimeIn,StringFormat={}hh:mm}"
                          TextAlignment="Center"
                          Grid.Column="2"
                          Grid.Row="1"
                          FontSize="15pt" />
             </md:ColorZone>
-            <md:ColorZone Mode="Light" Margin=".25 0 0 0">
+            <md:ColorZone Mode="Light" Margin=".25 0 0 0"
+                          BorderBrush="{StaticResource MaterialDesignDivider}"
+                          BorderThickness=".5">
               <TextBlock Text="{Binding TimeOut,StringFormat={}hh:mm}"
                          TextAlignment="Center"
                          Grid.Column="3"

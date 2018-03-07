@@ -131,6 +131,7 @@
     <Compile Include="Converters\WindowStateToPackIcon.cs" />
     <Compile Include="EnumBinding.cs" />
     <Compile Include="ViewModels\AddFingerViewModel.cs" />
+    <Compile Include="ViewModels\Enumerations.cs" />
     <Compile Include="ViewModels\Finger.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\Scanner.cs" />
@@ -152,6 +153,9 @@
     </Compile>
     <Compile Include="Views\PrintEnrollment.xaml.cs">
       <DependentUpon>PrintEnrollment.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PrintPayroll.xaml.cs">
+      <DependentUpon>PrintPayroll.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PunchView.xaml.cs">
       <DependentUpon>PunchView.xaml</DependentUpon>
@@ -192,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PrintEnrollment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PrintPayroll.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
